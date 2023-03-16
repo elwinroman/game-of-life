@@ -1,0 +1,33 @@
+* {
+	margin: 0; padding: 0;
+	box-sizing: border-box;
+   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto;
+}
+
+body {
+   background-color: #222;
+
+}
+.container {
+   width: 90%;
+   height: 100vh;
+   margin: 0 auto;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   gap: 20px;
+   padding: 50px;
+   border: 1px solid black;
+}
+header {
+   width: 100%;
+   border: 1px solid red;
+}
+.title {
+   color: white;
+}
+#container-canvas {
+   width: 100%;
+   height: 60%;
+   border: 1px solid red;
+}
