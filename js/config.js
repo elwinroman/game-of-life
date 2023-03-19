@@ -1,4 +1,4 @@
-const CELL_SIZE = 10
+const CELL_SIZE = 20
 const CELL_COLOR_ACTIVE = '#F1E6E6'
 const CELL_COLOR_DEACTIVE = '#222' 
 

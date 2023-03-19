@@ -1,29 +1,61 @@
-import { CELL_SIZE } from './config.js'
+import { CELL_SIZE, CELL_COLOR_ACTIVE, CELL_COLOR_DEACTIVE } from './config.js'
 
-export function draw(ctx, n_lines) {
-   ctx.beginPath()
-   let x = 0.5, y = 0.5
+export default class Grid {
+   constructor(containerCanvas) {
+      this.canvas = document.getElementById('canvas')
+      
+      this.ctx = this.canvas.getContext('2d')
+      this.canvas.width  = containerCanvas.clientWidth
+      this.canvas.height = containerCanvas.clientHeight
 
-   // lineas verticales (columnas)
-   for (let i=0; i<n_lines.column; i++) {
-      ctx.moveTo(x, 0)
-      ctx.lineTo(x, ctx.canvas.height)
-      x = x + CELL_SIZE
+      this.left = -Math.ceil(this.canvas.width / CELL_SIZE) * CELL_SIZE + 0.5
+      this.top = -Math.ceil(this.canvas.height / CELL_SIZE) * CELL_SIZE + 0.5
+      this.right = this.ctx.canvas.width * 2
+      this.bottom = this.ctx.canvas.width * 2
+
+      this.____infoSizes()
    }
-   
-   // lineas horizontales (filas)
-   for (let i=0; i<n_lines.row; i++) {
-      ctx.moveTo(0, y)
-      ctx.lineTo(ctx.canvas.width, y)
-      y = y + CELL_SIZE
-   }
-   ctx.stroke();
-}
 
-export function paintCell(ctx, pos, color) {
-   ctx.fillStyle = color
-   ctx.fillRect(
-      pos.column * CELL_SIZE + 1, pos.row * CELL_SIZE + 1, 
-      CELL_SIZE - 1, CELL_SIZE - 1
-   )  
+   draw() {
+      this.ctx.beginPath()
+
+      // lineas verticales (columnas)
+      for (let x=this.left; x<this.right; x+=CELL_SIZE) {
+         this.ctx.moveTo(x, this.top)
+         this.ctx.lineTo(x, this.bottom)
+      }
+      
+      // lineas horizontales (filas)
+      for (let y=this.top; y<this.bottom; y+=CELL_SIZE) {
+         this.ctx.moveTo(this.left, y)
+         this.ctx.lineTo(this.right, y)
+      }
+      this.ctx.stroke()
+   }
+
+   paintCell(pos) {
+      this.ctx.fillStyle = CELL_COLOR_ACTIVE
+      this._fillSquare(pos)
+   }
+
+   _fillSquare(pos) {
+      this.ctx.fillRect(
+         pos.column * CELL_SIZE + 1, pos.row * CELL_SIZE + 1, 
+         CELL_SIZE - 1, CELL_SIZE - 1
+      )
+   }
+
+   unpaintCell(pos) {
+      this.ctx.fillStyle = CELL_COLOR_DEACTIVE
+      this._fillSquare(pos)
+   }
+
+   ____infoSizes() {
+      console.log('El width del canvas es  ' + this.canvas.width)
+      console.log('El height del canvas es ' + this.canvas.height)
+      console.log('left:   ' + this.left)
+      console.log('top:    ' + this.top)
+      console.log('right:  ' + this.right)
+      console.log('bottom: ' + this.bottom)
+   }
 }

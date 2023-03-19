@@ -1,22 +1,13 @@
-import { CELL_SIZE, CELL_COLOR_ACTIVE, CELL_COLOR_DEACTIVE } from './config.js'
-import { draw, paintCell } from './grid.js'
+import { CELL_SIZE } from './config.js'
+import Grid from './grid.js'
 import { getMousePos } from './utils.js'
 import GameOfLife from './GameOfLife.js'
 
 export default class GameControl {
    constructor() {
-      const canvas = document.getElementById('canvas')
       const containerCanvas = document.getElementById('container-canvas')
 
-      this.ctx = canvas.getContext('2d')
-      this.ctx.canvas.width  = containerCanvas.clientWidth
-      this.ctx.canvas.height = containerCanvas.clientHeight
-
-      this.n_lines = {
-         column: Math.ceil(canvas.width / CELL_SIZE),
-         row: Math.ceil(canvas.height/ CELL_SIZE)
-      }
-
+      this.grid = new Grid(containerCanvas)
       this.gameOfLife = new GameOfLife()
    }
 
@@ -28,14 +19,14 @@ export default class GameControl {
             column: Math.floor(mousePos.x / CELL_SIZE),
             row: Math.floor(mousePos.y / CELL_SIZE)
          }
-         
+         console.log('(' + cellPosition.column + ',' + cellPosition.row + ')')
          if(this.gameOfLife.isCellActive(cellPosition)) {
             this.gameOfLife.deleteCellPosition(cellPosition)
-            paintCell(this.ctx, cellPosition, CELL_COLOR_DEACTIVE)      // despintar celdilla
+            this.grid.unpaintCell(cellPosition)
          }
          else {
             this.gameOfLife.activatedCells.push(cellPosition)
-            paintCell(this.ctx, cellPosition, CELL_COLOR_ACTIVE)
+            this.grid.paintCell(cellPosition)
          }
 
          this.gameOfLife.info()
@@ -44,7 +35,7 @@ export default class GameControl {
 
    run() {
       // dibuja la cuadricula
-      draw(this.ctx, this.n_lines)
+      this.grid.draw()
 
       this.clickCellEvent()
    }
