@@ -12,12 +12,11 @@ export default class Grid {
       this.top = -Math.ceil(this.canvas.height / CELL_SIZE) * CELL_SIZE + 0.5
       this.right = this.ctx.canvas.width * 2
       this.bottom = this.ctx.canvas.width * 2
-
-      this.____infoSizes()
    }
 
    draw() {
       this.ctx.beginPath()
+      this.ctx.clearRect(this.left, this.top, this.right - this.left, this.bottom - this.top)
 
       // lineas verticales (columnas)
       for (let x=this.left; x<this.right; x+=CELL_SIZE) {
