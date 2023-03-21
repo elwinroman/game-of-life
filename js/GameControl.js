@@ -9,33 +9,38 @@ export default class GameControl {
 
       this.grid = new Grid(containerCanvas)
       this.gameOfLife = new GameOfLife()
+
+      this.isDragging = false        // resuelve el conflicto
    }
 
    // Activa o desactiva una celdilla  
    clickCellEvent() {
       canvas.addEventListener('click', (e) => {
+         if(this.isDragging) return
+
          const mousePos = getMousePos(e);
-         const cellPosition = {     // posición de la celda clickeada
+         const cellPos = {     // posición de la celda clickeada
             column: Math.floor(mousePos.x / CELL_SIZE),
             row: Math.floor(mousePos.y / CELL_SIZE)
          }
-         console.log('(' + cellPosition.column + ',' + cellPosition.row + ')')
-         if(this.gameOfLife.isCellActive(cellPosition)) {
-            this.gameOfLife.deleteCellPosition(cellPosition)
-            this.grid.unpaintCell(cellPosition)
+         console.log('cell clicked: (' + cellPos.column + ',' + cellPos.row + ')')
+         if(this.gameOfLife.isCellActive(cellPos)) {
+            this.gameOfLife.deleteCellPosition(cellPos)
+            this.grid.unpaintCell(cellPos)
          }
          else {
-            this.gameOfLife.activatedCells.push(cellPosition)
-            this.grid.paintCell(cellPosition)
+            this.gameOfLife.addActivatedCell(cellPos)
+            this.grid.paintCell(cellPos)
          }
-
          this.gameOfLife.info()
-      });
+      })
    }
 
    // Arrastra el grid con el mouse (grid infinito)
    dragGrid() {
       let startPos = null
+      let dx = 0       // distancia en x recorrida por el mouse
+      let dy = 0       // distancia en y recorrida por el mouse
 
       // 1. El evento registra la posicion inicial del click presionado 
       canvas.addEventListener('mousedown', (e) => {
@@ -47,13 +52,16 @@ export default class GameControl {
       canvas.addEventListener('mousemove', (e) => {
          if(!startPos) return
 
+         this.isDragging = true
          const mousePos = getMousePos(e)
-         const dx = mousePos.x - startPos.x       // distancia en x
-         const dy = mousePos.y - startPos.y       // distancia en y
+         const dx_t = mousePos.x - startPos.x
+         const dy_t = mousePos.y - startPos.y
 
-         this.grid.ctx.translate(dx, dy)
+         this.grid.ctx.translate(dx_t, dy_t)
          this.grid.draw()
+         this.grid.paintAllActivatedCells(this.gameOfLife.syncActivatedCells())
          startPos = mousePos
+         dx += dx_t, dy += dy_t
       })
 
       /* 3. El evento registra la liberación al dejar de presionar el mouse,
@@ -63,8 +71,14 @@ export default class GameControl {
       
       const reset = () => {
          startPos = null
+         this.gameOfLife.distanceDrag.column += Math.floor(dx / CELL_SIZE)
+         this.gameOfLife.distanceDrag.row += Math.floor(dy / CELL_SIZE)
+         
          this.grid.ctx.setTransform(1, 0, 0, 1, 0, 0)    // resetea la traslación
          this.grid.draw()
+         this.grid.paintAllActivatedCells(this.gameOfLife.syncActivatedCells())
+         dx = 0, dy = 0
+         setTimeout(() => { this.isDragging = false }, 200)
       }
    }
 

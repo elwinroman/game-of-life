@@ -49,6 +49,12 @@ export default class Grid {
       this._fillSquare(pos)
    }
 
+   paintAllActivatedCells(activatedCells) {
+      this.ctx.fillStyle = CELL_COLOR_ACTIVE
+      for(let cell of activatedCells)
+         this._fillSquare(cell)
+   }
+
    ____infoSizes() {
       console.log('El width del canvas es  ' + this.canvas.width)
       console.log('El height del canvas es ' + this.canvas.height)
