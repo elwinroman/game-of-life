@@ -5,12 +5,12 @@ import GameOfLife from './GameOfLife.js'
 
 export default class GameControl {
    constructor() {
-      const containerCanvas = document.getElementById('container-canvas')
+      this.containerCanvas = document.getElementById('container-canvas')
 
-      this.grid = new Grid(containerCanvas)
+      this.grid = new Grid(this.containerCanvas)
       this.gameOfLife = new GameOfLife()
 
-      this.isDragging = false        // resuelve el conflicto
+      this.isDragging = false        // resuelve el conflicto entre click y mousedown
    }
 
    // Activa o desactiva una celdilla  
@@ -23,16 +23,15 @@ export default class GameControl {
             column: Math.floor(mousePos.x / CELL_SIZE),
             row: Math.floor(mousePos.y / CELL_SIZE)
          }
-         console.log('cell clicked: (' + cellPos.column + ',' + cellPos.row + ')')
+
          if(this.gameOfLife.isCellActive(cellPos)) {
-            this.gameOfLife.deleteCellPosition(cellPos)
+            this.gameOfLife.deleteCellPos(cellPos)
             this.grid.unpaintCell(cellPos)
          }
          else {
             this.gameOfLife.addActivatedCell(cellPos)
             this.grid.paintCell(cellPos)
          }
-         this.gameOfLife.info()
       })
    }
 
@@ -71,9 +70,9 @@ export default class GameControl {
       
       const reset = () => {
          startPos = null
-         this.gameOfLife.distanceDrag.column += Math.floor(dx / CELL_SIZE)
-         this.gameOfLife.distanceDrag.row += Math.floor(dy / CELL_SIZE)
          
+         this.gameOfLife.columnDragDistance += (Math.floor(dx / CELL_SIZE))
+         this.gameOfLife.rowDragDistance += (Math.floor(dy / CELL_SIZE))
          this.grid.ctx.setTransform(1, 0, 0, 1, 0, 0)    // resetea la traslación
          this.grid.draw()
          this.grid.paintAllActivatedCells(this.gameOfLife.syncActivatedCells())
@@ -87,6 +86,5 @@ export default class GameControl {
       this.grid.draw()
       this.clickCellEvent()
       this.dragGrid()
-      this.grid.____infoSizes()
    }
 }

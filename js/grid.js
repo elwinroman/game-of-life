@@ -2,32 +2,32 @@ import { CELL_SIZE, CELL_COLOR_ACTIVE, CELL_COLOR_DEACTIVE } from './config.js'
 
 export default class Grid {
    constructor(containerCanvas) {
-      this.canvas = document.getElementById('canvas')
+      this._canvas = document.getElementById('canvas')
       
-      this.ctx = this.canvas.getContext('2d')
-      this.canvas.width  = containerCanvas.clientWidth
-      this.canvas.height = containerCanvas.clientHeight
+      this.ctx = this._canvas.getContext('2d')
+      this._canvas.width  = containerCanvas.clientWidth - 1
+      this._canvas.height = containerCanvas.clientHeight - 1
 
-      this.left = -Math.ceil(this.canvas.width / CELL_SIZE) * CELL_SIZE + 0.5
-      this.top = -Math.ceil(this.canvas.height / CELL_SIZE) * CELL_SIZE + 0.5
-      this.right = this.ctx.canvas.width * 2
-      this.bottom = this.ctx.canvas.width * 2
+      this._left = -Math.ceil(this._canvas.width / CELL_SIZE) * CELL_SIZE + 0.5
+      this._top = -Math.ceil(this._canvas.height / CELL_SIZE) * CELL_SIZE + 0.5
+      this._right = this.ctx.canvas.width * 2
+      this._bottom = this.ctx.canvas.width * 2
    }
 
    draw() {
       this.ctx.beginPath()
-      this.ctx.clearRect(this.left, this.top, this.right - this.left, this.bottom - this.top)
-
+      this.ctx.clearRect(this._left, this._top, this._right - this._left, this._bottom - this._top)
+      
       // lineas verticales (columnas)
-      for (let x=this.left; x<this.right; x+=CELL_SIZE) {
-         this.ctx.moveTo(x, this.top)
-         this.ctx.lineTo(x, this.bottom)
+      for (let x=this._left; x<this._right; x+=CELL_SIZE) {
+         this.ctx.moveTo(x, this._top)
+         this.ctx.lineTo(x, this._bottom)
       }
       
       // lineas horizontales (filas)
-      for (let y=this.top; y<this.bottom; y+=CELL_SIZE) {
-         this.ctx.moveTo(this.left, y)
-         this.ctx.lineTo(this.right, y)
+      for (let y=this._top; y<this._bottom; y+=CELL_SIZE) {
+         this.ctx.moveTo(this._left, y)
+         this.ctx.lineTo(this._right, y)
       }
       this.ctx.stroke()
    }
@@ -55,12 +55,13 @@ export default class Grid {
          this._fillSquare(cell)
    }
 
-   ____infoSizes() {
-      console.log('El width del canvas es  ' + this.canvas.width)
-      console.log('El height del canvas es ' + this.canvas.height)
-      console.log('left:   ' + this.left)
-      console.log('top:    ' + this.top)
-      console.log('right:  ' + this.right)
-      console.log('bottom: ' + this.bottom)
-   }
+   // Setters & getters
+   set width(width)   { this._canvas.width = width }
+   set height(height) { this._canvas.height = height }
+   set left(left)     { this._left = left }
+   set top(top)       { this._top = top }
+   set right(right)   { this._right = right }
+   set bottom(bottom) { this._bottom = bottom }
+   get width()        { return this._canvas.width }
+   get height()       { return this._canvas.height }
 }

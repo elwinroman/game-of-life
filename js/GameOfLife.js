@@ -1,51 +1,55 @@
 export default class GameOfLife {
    constructor() {
-      this.activatedCells = []    // almacena todas las celdillas activadas
+      this._activatedCells = []    // almacena todas las celdillas activadas
       
       //almacena la distancia recorrida del mouse al arrastrar el grid
-      this.distanceDrag = { column: 0, row: 0 }
+      this._dragDistance = { column: 0, row: 0 }
    }
 
    // Comprueba si la celdilla clickeada está previamente activada
    isCellActive(pos) {
-      return this.activatedCells.some((activatedCell) => {
+      return this._activatedCells.some((activatedCell) => {
          return (
-            activatedCell.column === pos.column - this.distanceDrag.column && 
-            activatedCell.row === pos.row - this.distanceDrag.row
+            activatedCell.column === pos.column - this._dragDistance.column && 
+            activatedCell.row === pos.row - this._dragDistance.row
          )
       })
    }
 
    // Elimina la posición de una celdilla del array de celdillas activadas
-   deleteCellPosition(pos) {
-      const index = this.activatedCells.findIndex((activatedCell) => {
+   deleteCellPos(pos) {
+      const index = this._activatedCells.findIndex((activatedCell) => {
          return ( 
-           activatedCell.column === pos.column - this.distanceDrag.column &&
-           activatedCell.row === pos.row - this.distanceDrag.row
+           activatedCell.column === pos.column - this._dragDistance.column &&
+           activatedCell.row === pos.row - this._dragDistance.row
          )
       })
       
-      this.activatedCells.splice(index, 1)
+      this._activatedCells.splice(index, 1)
    }
 
    // Sincroniza la posición de las celdillas de la matriz con respecto al lienzo
    syncActivatedCells() {
-      return this.activatedCells.map(cell => {
+      return this._activatedCells.map(activatedCell => {
          return { 
-            column: cell.column + this.distanceDrag.column,
-            row: cell.row + this.distanceDrag.row 
+            column: activatedCell.column + this._dragDistance.column,
+            row: activatedCell.row + this._dragDistance.row 
          }
       })
    }
 
    // Guarda la posicion de una celdilla clickeada en un array
    addActivatedCell(pos) {
-      const pos_column = pos.column - this.distanceDrag.column
-      const pos_row = pos.row - this.distanceDrag.row
-      this.activatedCells.push({column: pos_column, row: pos_row})
+      this._activatedCells.push({
+         column: pos.column - this._dragDistance.column, 
+         row: pos.row - this._dragDistance.row
+      })
    }
 
-   info() {
-      console.log(this.activatedCells)
-   }
+   // Setters & getters
+   set columnDragDistance(column) { this._dragDistance.column = column }
+   set rowDragDistance(row)       { this._dragDistance.row = row }
+   get columnDragDistance()       { return this._dragDistance.column }
+   get rowDragDistance()          { return this._dragDistance.row }
+   get activatedCells()           { return this._activatedCells }
 }
