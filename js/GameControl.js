@@ -81,10 +81,24 @@ export default class GameControl {
       }
    }
 
+   resizeEvent() {
+      window.addEventListener('resize', () => {
+         this.grid.width = this.containerCanvas.clientWidth - 1
+         this.grid.height = this.containerCanvas.clientHeight - 1
+         this.grid.left = -Math.ceil(this.grid.width / CELL_SIZE) * CELL_SIZE + 0.5
+         this.grid.top = -Math.ceil(this.grid.height / CELL_SIZE) * CELL_SIZE + 0.5
+         this.grid.right = this.grid.width * 2
+         this.grid.bottom = this.grid.height * 2
+         this.grid.draw()
+         this.grid.paintAllActivatedCells(this.gameOfLife.syncActivatedCells())
+      })
+   }
+
    run() {
       // dibuja la cuadricula
       this.grid.draw()
       this.clickCellEvent()
       this.dragGrid()
+      this.resizeEvent()
    }
 }
