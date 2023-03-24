@@ -6,6 +6,8 @@ import GameOfLife from './GameOfLife.js'
 export default class GameControl {
    constructor() {
       this.containerCanvas = document.getElementById('container-canvas')
+      this.zoom = document.getElementById('zoom-range')
+      this.zoom.value = CELL_SIZE
 
       this.grid = new Grid(this.containerCanvas)
       this.gameOfLife = new GameOfLife()
@@ -20,8 +22,8 @@ export default class GameControl {
 
          const mousePos = getMousePos(e);
          const cellPos = {     // posición de la celda clickeada
-            column: Math.floor(mousePos.x / CELL_SIZE),
-            row: Math.floor(mousePos.y / CELL_SIZE)
+            column: Math.floor(mousePos.x / this.grid.cellSize),
+            row: Math.floor(mousePos.y / this.grid.cellSize)
          }
 
          if(this.gameOfLife.isCellActive(cellPos)) {
@@ -71,8 +73,8 @@ export default class GameControl {
       const reset = () => {
          startPos = null
          
-         this.gameOfLife.columnDragDistance += (Math.floor(dx / CELL_SIZE))
-         this.gameOfLife.rowDragDistance += (Math.floor(dy / CELL_SIZE))
+         this.gameOfLife.columnDragDistance += (Math.floor(dx / this.grid.cellSize))
+         this.gameOfLife.rowDragDistance += (Math.floor(dy / this.grid.cellSize))
          this.grid.ctx.setTransform(1, 0, 0, 1, 0, 0)    // resetea la traslación
          this.grid.draw()
          this.grid.paintAllActivatedCells(this.gameOfLife.syncActivatedCells())
@@ -83,15 +85,26 @@ export default class GameControl {
 
    resizeEvent() {
       window.addEventListener('resize', () => {
-         this.grid.width = this.containerCanvas.clientWidth - 1
-         this.grid.height = this.containerCanvas.clientHeight - 1
-         this.grid.left = -Math.ceil(this.grid.width / CELL_SIZE) * CELL_SIZE + 0.5
-         this.grid.top = -Math.ceil(this.grid.height / CELL_SIZE) * CELL_SIZE + 0.5
-         this.grid.right = this.grid.width * 2
-         this.grid.bottom = this.grid.height * 2
-         this.grid.draw()
-         this.grid.paintAllActivatedCells(this.gameOfLife.syncActivatedCells())
+         this._rebuilt()
       })
+   }
+
+   zoomControl() {
+      this.zoom.addEventListener('change', () => {
+         this.grid.cellSize = parseInt(this.zoom.value)
+         this._rebuilt()
+      })
+   }
+
+   _rebuilt() {
+      this.grid.width = this.containerCanvas.clientWidth - 1
+      this.grid.height = this.containerCanvas.clientHeight - 1
+      this.grid.left = -Math.ceil(this.grid.width / this.grid.cellSize) * this.grid.cellSize + 0.5
+      this.grid.top = -Math.ceil(this.grid.height / this.grid.cellSize) * this.grid.cellSize + 0.5
+      this.grid.right = this.grid.width * 2
+      this.grid.bottom = this.grid.height * 2
+      this.grid.draw()
+      this.grid.paintAllActivatedCells(this.gameOfLife.syncActivatedCells())
    }
 
    run() {
@@ -100,5 +113,6 @@ export default class GameControl {
       this.clickCellEvent()
       this.dragGrid()
       this.resizeEvent()
+      this.zoomControl()
    }
 }

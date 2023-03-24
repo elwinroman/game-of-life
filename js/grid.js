@@ -7,9 +7,10 @@ export default class Grid {
       this.ctx = this._canvas.getContext('2d')
       this._canvas.width  = containerCanvas.clientWidth - 1
       this._canvas.height = containerCanvas.clientHeight - 1
+      this._cellSize = CELL_SIZE
 
-      this._left = -Math.ceil(this._canvas.width / CELL_SIZE) * CELL_SIZE + 0.5
-      this._top = -Math.ceil(this._canvas.height / CELL_SIZE) * CELL_SIZE + 0.5
+      this._left = -Math.ceil(this._canvas.width / this._cellSize) * this._cellSize + 0.5
+      this._top = -Math.ceil(this._canvas.height / this._cellSize) * this._cellSize + 0.5
       this._right = this.ctx.canvas.width * 2
       this._bottom = this.ctx.canvas.width * 2
    }
@@ -19,13 +20,13 @@ export default class Grid {
       this.ctx.clearRect(this._left, this._top, this._right - this._left, this._bottom - this._top)
       
       // lineas verticales (columnas)
-      for (let x=this._left; x<this._right; x+=CELL_SIZE) {
+      for (let x=this._left; x<this._right; x+=this._cellSize) {
          this.ctx.moveTo(x, this._top)
          this.ctx.lineTo(x, this._bottom)
       }
       
       // lineas horizontales (filas)
-      for (let y=this._top; y<this._bottom; y+=CELL_SIZE) {
+      for (let y=this._top; y<this._bottom; y+=this._cellSize) {
          this.ctx.moveTo(this._left, y)
          this.ctx.lineTo(this._right, y)
       }
@@ -39,8 +40,8 @@ export default class Grid {
 
    _fillSquare(pos) {
       this.ctx.fillRect(
-         pos.column * CELL_SIZE + 1, pos.row * CELL_SIZE + 1, 
-         CELL_SIZE - 1, CELL_SIZE - 1
+         pos.column * this._cellSize + 1, pos.row * this._cellSize + 1, 
+         this._cellSize - 1, this._cellSize - 1
       )
    }
 
@@ -62,6 +63,8 @@ export default class Grid {
    set top(top)       { this._top = top }
    set right(right)   { this._right = right }
    set bottom(bottom) { this._bottom = bottom }
+   set cellSize(size) { this._cellSize = size }
    get width()        { return this._canvas.width }
    get height()       { return this._canvas.height }
+   get cellSize()     { return this._cellSize }
 }
