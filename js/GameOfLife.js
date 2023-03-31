@@ -76,7 +76,7 @@ export default class GameOfLife {
             column: j - this._syncDistance.col
          })
       }
-      
+
       this._updateMatrix()
       let temporalActivatedCells = []
       
@@ -108,6 +108,10 @@ export default class GameOfLife {
 
    // Actualiza la matriz con las celdillas activadas por click (by user)
    _updateMatrix() {
+      this._matrix = Array(this._rows).fill().map(() => 
+         Array(this._cols).fill(CELL_OFF)
+      )
+      
       for (let cell of this._activatedCells) {
          let syncRow = cell.row + this._syncDistance.row
          let syncCol = cell.column + this._syncDistance.col
