@@ -7,10 +7,12 @@ export default class GameControl {
    constructor() {
       this.containerCanvas = document.getElementById('container-canvas')
       this.zoom = document.getElementById('zoom-range')
+      this.nextBtn = document.querySelector('button.next-btn')
+      
       this.zoom.value = CELL_SIZE
 
       this.grid = new Grid(this.containerCanvas)
-      this.gameOfLife = new GameOfLife()
+      this.gameOfLife = new GameOfLife(this.grid.width, this.grid.height)
 
       this.isDragging = false        // resuelve el conflicto entre click y mousedown
    }
@@ -96,6 +98,14 @@ export default class GameControl {
       })
    }
 
+   nextControl() {
+      this.nextBtn.addEventListener('click', () => {
+         this.gameOfLife.nextGeneration()
+         this.grid.draw()
+         this.grid.paintAllActivatedCells(this.gameOfLife.syncActivatedCells())   
+      })
+   }
+
    _rebuilt() {
       this.grid.width = this.containerCanvas.clientWidth - 1
       this.grid.height = this.containerCanvas.clientHeight - 1
@@ -114,5 +124,6 @@ export default class GameControl {
       this.dragGrid()
       this.resizeEvent()
       this.zoomControl()
+      this.nextControl()
    }
 }
