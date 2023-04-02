@@ -112,6 +112,18 @@ export default class GameControl {
       this.grid.top = -Math.ceil(this.grid.height / this.grid.cellSize) * this.grid.cellSize + 0.5
       this.grid.right = this.grid.width * 2
       this.grid.bottom = this.grid.height * 2
+
+      // mantiene el centro del grid cada vez que se hace un zoom en el grid o resize en el browser
+      const oldGridCenter = {...this.grid.center}
+      const newGridCenter = {
+         row: Math.ceil(Math.ceil(this.grid.height / this.grid.cellSize) / 2),
+         col: Math.ceil(Math.ceil(this.grid.width / this.grid.cellSize) / 2)
+      }
+      this.grid.rowCenter = newGridCenter.row
+      this.grid.colCenter = newGridCenter.col
+      this.gameOfLife.rowDragDistance += newGridCenter.row - oldGridCenter.row
+      this.gameOfLife.colDragDistance += newGridCenter.col - oldGridCenter.col
+
       this.grid.draw()
       this.grid.paintAllActivatedCells(this.gameOfLife.syncActivatedCells())
    }

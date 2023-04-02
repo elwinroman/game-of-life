@@ -15,8 +15,8 @@ export default class Grid {
       this._bottom = this.ctx.canvas.width * 2
 
       this._center = {
-         row: Math.ceil(Math.ceil(this._canvas.height / CELL_SIZE) / 2),
-         col: Math.ceil(Math.ceil(this._canvas.width / CELL_SIZE) / 2)
+         row: Math.ceil(Math.ceil(this._canvas.height / this._cellSize) / 2),
+         col: Math.ceil(Math.ceil(this._canvas.width / this._cellSize) / 2)
       }
    }
 
@@ -69,6 +69,8 @@ export default class Grid {
    set right(right)   { this._right = right }
    set bottom(bottom) { this._bottom = bottom }
    set cellSize(size) { this._cellSize = size }
+   set rowCenter(row) { this._center.row = row }
+   set colCenter(col) { this._center.col = col }
    get width()        { return this._canvas.width }
    get height()       { return this._canvas.height }
    get cellSize()     { return this._cellSize }
