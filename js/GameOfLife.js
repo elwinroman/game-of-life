@@ -1,27 +1,21 @@
 import { COLUMN_MATRIX, ROW_MATRIX, CELL_ON, CELL_OFF, CELL_SIZE } from './config.js'
 
 export default class GameOfLife {
-   constructor(widthCanvas, heightCanvas) {
+   constructor(gridCenter) {
       this._activatedCells = []    // almacena todas las celdillas activadas
 
-      //almacena la distancia recorrida del mouse al arrastrar el grid
-      this._dragDistance = { column: 0, row: 0 }
+      // almacena la distancia recorrida del mouse al arrastrar el grid
+      this._dragDistance = { row: 0, col: 0 }
       
-      this._cols = COLUMN_MATRIX
-      this._rows = ROW_MATRIX
-      this._matrix = Array(this._rows).fill().map(() => Array(this._cols).fill(CELL_OFF))
+      this._row = ROW_MATRIX
+      this._col = COLUMN_MATRIX
+      this._matrix = Array(this._row).fill().map(() => Array(this._col).fill(CELL_OFF))
       this._newMatrix = structuredClone(this._matrix)       // matriz de la siguiente generación
-
-      // centro del grid
-      const gridCenter = {
-         row: Math.ceil(Math.ceil(widthCanvas / CELL_SIZE) / 2),
-         col: Math.ceil(Math.ceil(heightCanvas / CELL_SIZE) / 2)
-      }
 
       // distancia equivalente entre el centro del grid (vista) y la matriz (database)
       this._syncDistance = { 
-         row: Math.ceil(this._rows / 2) - gridCenter.row,
-         col: Math.ceil(this._cols / 2) - gridCenter.col
+         row: Math.ceil(this._row / 2) - gridCenter.row,
+         col: Math.ceil(this._col / 2) - gridCenter.col
       }
    }
 
@@ -29,8 +23,8 @@ export default class GameOfLife {
    isCellActive(pos) {
       return this._activatedCells.some((activatedCell) => {
          return (
-            activatedCell.column === pos.column - this._dragDistance.column && 
-            activatedCell.row === pos.row - this._dragDistance.row
+            activatedCell.row === pos.row - this._dragDistance.row &&
+            activatedCell.col === pos.col - this._dragDistance.col 
          )
       })
    }
@@ -39,8 +33,8 @@ export default class GameOfLife {
    deleteCellPos(pos) {
       const index = this._activatedCells.findIndex((activatedCell) => {
          return ( 
-           activatedCell.column === pos.column - this._dragDistance.column &&
-           activatedCell.row === pos.row - this._dragDistance.row
+            activatedCell.row === pos.row - this._dragDistance.row &&
+            activatedCell.col === pos.col - this._dragDistance.col
          )
       })
       
@@ -51,8 +45,8 @@ export default class GameOfLife {
    syncActivatedCells() {
       return this._activatedCells.map(activatedCell => {
          return { 
-            column: activatedCell.column + this._dragDistance.column,
-            row: activatedCell.row + this._dragDistance.row 
+            row: activatedCell.row + this._dragDistance.row,
+            col: activatedCell.col + this._dragDistance.col
          }
       })
    }
@@ -60,8 +54,8 @@ export default class GameOfLife {
    // Guarda la posicion de una celdilla clickeada en un array
    addActivatedCell(pos) {
       this._activatedCells.push({
-         column: pos.column - this._dragDistance.column, 
-         row: pos.row - this._dragDistance.row
+         row: pos.row - this._dragDistance.row,
+         col: pos.col - this._dragDistance.col
       })
    }
 
@@ -73,7 +67,7 @@ export default class GameOfLife {
       const addTemporalActivatedCell = (i, j) => {
          temporalActivatedCells.push({
             row: i - this._syncDistance.row,
-            column: j - this._syncDistance.col
+            col: j - this._syncDistance.col
          })
       }
 
@@ -81,8 +75,8 @@ export default class GameOfLife {
       let temporalActivatedCells = []
       
       // analiza cada célula de la matriz
-      for (let i=1; i<this._rows-1; i++) {
-         for (let j=1; j<this._cols-1; j++) {
+      for (let i=1; i<this._row-1; i++) {
+         for (let j=1; j<this._col-1; j++) {
             const currentCell = this._matrix[i][j]
             const neighbors = this._calculateNeighborsAlive(i, j)
             
@@ -108,13 +102,13 @@ export default class GameOfLife {
 
    // Actualiza la matriz con las celdillas activadas por click (by user)
    _updateMatrix() {
-      this._matrix = Array(this._rows).fill().map(() => 
-         Array(this._cols).fill(CELL_OFF)
+      this._matrix = Array(this._row).fill().map(() => 
+         Array(this._col).fill(CELL_OFF)
       )
       
       for (let cell of this._activatedCells) {
          let syncRow = cell.row + this._syncDistance.row
-         let syncCol = cell.column + this._syncDistance.col
+         let syncCol = cell.col + this._syncDistance.col
          this._matrix[syncRow][syncCol] = CELL_ON
       }
    }
@@ -132,9 +126,9 @@ export default class GameOfLife {
    }
 
    // Setters & getters
-   set columnDragDistance(column) { this._dragDistance.column = column }
-   set rowDragDistance(row)       { this._dragDistance.row = row }
-   get columnDragDistance()       { return this._dragDistance.column }
-   get rowDragDistance()          { return this._dragDistance.row }
-   get activatedCells()           { return this._activatedCells }
+   set rowDragDistance(row) { this._dragDistance.row = row }
+   set colDragDistance(col) { this._dragDistance.col = col }
+   get colDragDistance()    { return this._dragDistance.col }
+   get rowDragDistance()    { return this._dragDistance.row }
+   get activatedCells()     { return this._activatedCells }
 }

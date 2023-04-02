@@ -6,29 +6,28 @@ import GameOfLife from './GameOfLife.js'
 export default class GameControl {
    constructor() {
       this.containerCanvas = document.getElementById('container-canvas')
-      this.zoom = document.getElementById('zoom-range')
+      this.zoomRange = document.getElementById('zoom-range')
       this.nextBtn = document.querySelector('button.next-btn')
       
-      this.zoom.value = CELL_SIZE
-
       this.grid = new Grid(this.containerCanvas)
-      this.gameOfLife = new GameOfLife(this.grid.width, this.grid.height)
-
+      this.gameOfLife = new GameOfLife(this.grid.center)
+      
+      this.zoomRange.value = CELL_SIZE
       this.isDragging = false        // resuelve el conflicto entre click y mousedown
    }
 
    // Activa o desactiva una celdilla  
    clickCellEvent() {
       canvas.addEventListener('click', (e) => {
-         if(this.isDragging) return
+         if (this.isDragging) return
 
          const mousePos = getMousePos(e);
          const cellPos = {     // posición de la celda clickeada
-            column: Math.floor(mousePos.x / this.grid.cellSize),
-            row: Math.floor(mousePos.y / this.grid.cellSize)
+            row: Math.floor(mousePos.y / this.grid.cellSize),
+            col: Math.floor(mousePos.x / this.grid.cellSize)
          }
 
-         if(this.gameOfLife.isCellActive(cellPos)) {
+         if (this.gameOfLife.isCellActive(cellPos)) {
             this.gameOfLife.deleteCellPos(cellPos)
             this.grid.unpaintCell(cellPos)
          }
@@ -53,7 +52,7 @@ export default class GameControl {
       /* 2. El evento registra el movimiento del mouse 
             solo cuando se cumple el paso 1 */
       canvas.addEventListener('mousemove', (e) => {
-         if(!startPos) return
+         if (!startPos) return
 
          this.isDragging = true
          const mousePos = getMousePos(e)
@@ -75,8 +74,8 @@ export default class GameControl {
       const reset = () => {
          startPos = null
          
-         this.gameOfLife.columnDragDistance += (Math.floor(dx / this.grid.cellSize))
          this.gameOfLife.rowDragDistance += (Math.floor(dy / this.grid.cellSize))
+         this.gameOfLife.colDragDistance += (Math.floor(dx / this.grid.cellSize))
          this.grid.ctx.setTransform(1, 0, 0, 1, 0, 0)    // resetea la traslación
          this.grid.draw()
          this.grid.paintAllActivatedCells(this.gameOfLife.syncActivatedCells())
@@ -87,14 +86,14 @@ export default class GameControl {
 
    resizeEvent() {
       window.addEventListener('resize', () => {
-         this._rebuilt()
+         this._rebuiltGrid()
       })
    }
 
    zoomControl() {
-      this.zoom.addEventListener('change', () => {
-         this.grid.cellSize = parseInt(this.zoom.value)
-         this._rebuilt()
+      this.zoomRange.addEventListener('change', () => {
+         this.grid.cellSize = parseInt(this.zoomRange.value)
+         this._rebuiltGrid()
       })
    }
 
@@ -106,7 +105,7 @@ export default class GameControl {
       })
    }
 
-   _rebuilt() {
+   _rebuiltGrid() {
       this.grid.width = this.containerCanvas.clientWidth - 1
       this.grid.height = this.containerCanvas.clientHeight - 1
       this.grid.left = -Math.ceil(this.grid.width / this.grid.cellSize) * this.grid.cellSize + 0.5
@@ -118,7 +117,6 @@ export default class GameControl {
    }
 
    run() {
-      // dibuja la cuadricula
       this.grid.draw()
       this.clickCellEvent()
       this.dragGrid()

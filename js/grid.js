@@ -13,6 +13,11 @@ export default class Grid {
       this._top = -Math.ceil(this._canvas.height / this._cellSize) * this._cellSize + 0.5
       this._right = this.ctx.canvas.width * 2
       this._bottom = this.ctx.canvas.width * 2
+
+      this._center = {
+         row: Math.ceil(Math.ceil(this._canvas.height / CELL_SIZE) / 2),
+         col: Math.ceil(Math.ceil(this._canvas.width / CELL_SIZE) / 2)
+      }
    }
 
    draw() {
@@ -40,7 +45,7 @@ export default class Grid {
 
    _fillSquare(pos) {
       this.ctx.fillRect(
-         pos.column * this._cellSize + 1, pos.row * this._cellSize + 1, 
+         pos.col * this._cellSize + 1, pos.row * this._cellSize + 1, 
          this._cellSize - 1, this._cellSize - 1
       )
    }
@@ -52,7 +57,7 @@ export default class Grid {
 
    paintAllActivatedCells(activatedCells) {
       this.ctx.fillStyle = CELL_COLOR_ACTIVE
-      for(let cell of activatedCells)
+      for (let cell of activatedCells)
          this._fillSquare(cell)
    }
 
@@ -67,4 +72,5 @@ export default class Grid {
    get width()        { return this._canvas.width }
    get height()       { return this._canvas.height }
    get cellSize()     { return this._cellSize }
+   get center()       { return this._center }
 }
