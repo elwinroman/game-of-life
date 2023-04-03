@@ -1,6 +1,6 @@
 const CELL_SIZE = 12
-const CELL_COLOR_ACTIVE = '#F1E6E6'
-const CELL_COLOR_DEACTIVE = '#222' 
+const CELL_COLOR_ACTIVE = '#00517B'
+const CELL_COLOR_DEACTIVE = '#fff' 
 export const COLUMN_MATRIX = 100 // tamaño de la matriz en columnas
 export const ROW_MATRIX = 100    // tamaño de la matriz en filas
 export const CELL_ON = 1         // celula viva

@@ -5,7 +5,7 @@ import GameOfLife from './GameOfLife.js'
 
 export default class GameControl {
    constructor() {
-      this.containerCanvas = document.getElementById('container-canvas')
+      this.containerCanvas = document.querySelector('.canvas-container')
       this.zoomRange = document.getElementById('zoom-range')
       this.nextBtn = document.querySelector('button.next-btn')
       

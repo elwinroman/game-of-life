@@ -35,6 +35,9 @@ export default class Grid {
          this.ctx.moveTo(this._left, y)
          this.ctx.lineTo(this._right, y)
       }
+      // this.ctx.strokeStyle = '#434656'
+      this.ctx.strokeStyle = '#9FADBD'
+      this.ctx.lineWidth = 0.5
       this.ctx.stroke()
    }
 

@@ -10,21 +10,116 @@
 	<script src="js/main.js" type="module" crossorigin></script>
 </head>
 <body>
-	<main class="container">
-      <header>
-         <h1 class="title">Juego de la Vida - Conwell</h1>
-      </header>
+   
+   <header class="header">
+      <h1 class="title">Juego de la Vida - Conwell</h1>
+      <span class="subtitle">Autómata celular</span>
+   </header>
 
-		<section id="container-canvas">
-			<canvas id="canvas"></canvas>
-		</section>
+	<section class="container">
 
-      <section class="panel">
-         <input id="zoom-range" type="range" min="4" max="14">
-         <button class="next-btn">
-            Next
-         </button>
+      <div class="info">
+         <p>El juego de la vida" es un autómata celular diseñado por el matematico
+            británico John Horton Conway en 1970. Se trata de un modelo matemático
+            que consiste en un cuadrícula bidimensional de células que pueden estar
+            vivas o muertas
+         </p>
+      </div>
+      <main class="game">
+         <section class="panel top-panel">
+            <div>
+               <span>Escoge tu patron</span>
+               <select class="pattern-select btn" placeholder="texto">
+                  <option value="0" selected>None</option>
+                  <option value="1">XKCD RIP John Conway</option>
+                  <option value="2">Lightweight Spaceship</option>
+                  <option value="3">Gosper Glider Gun</option>
+                  <option value="4">other</option>
+                  <option value="5">other</option>
+                  <option value="6">other</option>
+               </select>
+            </div>
+
+            <svg class="svg-icon toggle-gridlines" width="400px" height="400px" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" fill="#000000">
+               <g id="SVGRepo_bgCarrier" stroke-width="0"/>
+               <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
+               <g id="SVGRepo_iconCarrier">
+                  <path fill="#09244B" d="M640 384v256H384V384h256zm64 0h192v256H704V384zm-64 512H384V704h256v192zm64 0V704h192v192H704zm-64-768v192H384V128h256zm64 0h192v192H704V128zM320 384v256H128V384h192zm0 512H128V704h192v192zm0-768v192H128V128h192z"/>
+               </g>
+               <title>Toggle gridlines</title>
+            </svg>
+         </section>
+   
+         <div class="canvas-container">
+            <canvas id="canvas"></canvas>
+         </div>
+   
+         <section class="panel bottom-panel">
+            <ul class="btn-group">
+               <li>
+                  <button class="next-btn btn">
+                     <svg class="btn-svg-icon" width="800px" height="800px" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                        <g fill="#2e3436">
+                            <path d="m 1 3 v 10 c 0 1 1.085938 1 1.085938 1 h 0.113281 c 0.210937 0 0.417969 -0.046875 0.601562 -0.148438 l 8.398438 -4.800781 c 0.375 -0.207031 0.5625 -0.628906 0.5625 -1.050781 s -0.1875 -0.84375 -0.5625 -1.050781 l -8.398438 -4.800781 c -0.183593 -0.101563 -0.390625 -0.148438 -0.601562 -0.148438 h -0.113281 s -1.085938 0 -1.085938 1 z m 0 0"/>
+                            <path d="m 14.5 2 h -1 c -0.277344 0 -0.5 0.222656 -0.5 0.5 v 11 c 0 0.277344 0.222656 0.5 0.5 0.5 h 1 c 0.277344 0 0.5 -0.222656 0.5 -0.5 v -11 c 0 -0.277344 -0.222656 -0.5 -0.5 -0.5 z m 0 0"/>
+                        </g>
+                     </svg>
+                     <span>Next</span>
+                  </button>
+               </li>
+               
+               <li>
+                  <button class="btn">
+                     <svg class="btn-svg-icon" width="800px" height="800px" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                        <path d="m 2 2.5 v 11 c 0 1.5 1.269531 1.492188 1.269531 1.492188 h 0.128907 c 0.246093 0.003906 0.488281 -0.050782 0.699218 -0.171876 l 9.796875 -5.597656 c 0.433594 -0.242187 0.65625 -0.734375 0.65625 -1.226562 c 0 -0.492188 -0.222656 -0.984375 -0.65625 -1.222656 l -9.796875 -5.597657 c -0.210937 -0.121093 -0.453125 -0.175781 -0.699218 -0.175781 h -0.128907 s -1.269531 0 -1.269531 1.5 z m 0 0" fill="#2e3436"/>
+                     </svg>
+                     <span>Start</span>
+                  </button>
+               </li>
+      
+               <li>
+                  <button class="btn">
+                     <svg class="btn-svg-icon reset-svg" width="800px" height="800px" viewBox="0 0 64 64" data-name="Icon Set - Black" id="Icon_Set_-_Black" xmlns="http://www.w3.org/2000/svg" fill="#000000">
+                        <g id="SVGRepo_bgCarrier" stroke-width="0"/>
+                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
+                        <g id="SVGRepo_iconCarrier"> <defs> <style>.cls-1{fill:none;}.cls-1,.cls-2{stroke:#2e3436;stroke-linecap:round;stroke-linejoin:round;stroke-width:8px;}.cls-2{fill:#ccc;}</style> </defs> <g id="Refresh"> <path class="cls-1" d="M32,56h0a18,18,0,0,0,0-36h0"/> <path class="cls-1" d="M14,38A18,18,0,0,0,32,56"/> <polygon class="cls-2" points="35 8 17 20 35 32 35 20 35 8"/> </g> </g>
+                     </svg>
+                     <span>Reset</span>
+                  </button>
+               </li>
+            </ul>
+   
+            <ul class="range-group">
+               <li class="zoom-control">
+                  <img src="assets/icons/grid-zoom.svg" class="svg-icon" title="zoom grid">
+                  <input id="zoom-range" type="range" min="4" max="14">
+               </li>
+      
+               <li class="speed-control">
+                  <img src="assets/icons/speed.svg" class="svg-icon" title="speed game">
+                  <input id="speed-range" type="range" min="4" max="14">
+               </li>
+            </ul>
+         </section>
+      </main>
+
+      <section class="info">
+         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus itaque nesciunt velit vel reprehenderit dolorem facere asperiores repellat culpa suscipit, voluptates, soluta architecto cumque delectus natus aliquid obcaecati laborum. Odio?
+         Expedita ex nesciunt adipisci, enim nostrum exercitationem nemo. Maxime dolorum architecto assumenda esse, et excepturi. Neque soluta possimus facilis sit magnam esse perferendis ad est id deleniti. Minus, enim quidem!
+         Eveniet rerum in expedita! Eligendi blanditiis aut nemo tempore laborum perspiciatis, hic quod, sint officiis id nihil non ab accusantium labore mollitia earum in veritatis esse tenetur, illo nobis quos.
+         Nesciunt accusantium dolores blanditiis molestias beatae cupiditate neque facere. Sequi eligendi ad distinctio necessitatibus eos aperiam fugit delectus enim itaque rerum neque quae accusantium id magnam veritatis praesentium, a laborum.
+         Quod ex similique aut iusto perferendis. Facilis ratione aspernatur iusto laudantium qui tempora sint, beatae eveniet reprehenderit. Dicta neque eos dolorem, natus corporis sint in nisi quis voluptatem cupiditate optio!</p>
       </section>
-	</main>
+
+      <footer>
+         <span>
+            The website was established and is currently managed by Elwin Roman
+         </span>
+         <br>
+         <span>
+            🤞 elwinromanv@gmail.com
+         </span>
+      </footer>
+	</section>
 </body>
 </html>
