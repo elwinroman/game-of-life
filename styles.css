@@ -118,7 +118,6 @@ li {
    transition: transform 200ms ease-in;
 }
 
-
 .svg-icon {
    width: 25px;
    height: 25px;
@@ -138,6 +137,11 @@ svg.btn-svg-icon.reset-svg .cls-2 {
 .svg-icon.toggle-gridlines path {
    fill: #00517B;
 }
+/* start and stop svg's */
+.start-btn .start-svg { display: block; }
+.start-btn .stop-svg { display: none; }
+.start-btn.is-running .start-svg { display: none; }
+.start-btn.is-running .stop-svg { display: block; }
 
 input[type='range'],
 input[type='range']::-webkit-slider-runnable-track,

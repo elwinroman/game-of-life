@@ -17,6 +17,8 @@ export default class GameOfLife {
          row: Math.ceil(this._row / 2) - gridCenter.row,
          col: Math.ceil(this._col / 2) - gridCenter.col
       }
+
+      this.generation = 0
    }
 
    // Comprueba si la celdilla clickeada está previamente activada

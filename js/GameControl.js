@@ -8,14 +8,19 @@ export default class GameControl {
       this.containerCanvas = document.querySelector('.canvas-container')
       this.zoomRange = document.getElementById('zoom-range')
       this.nextBtn = document.querySelector('button.next-btn')
+      this.startBtn = document.querySelector('button.start-btn')
       
       this.grid = new Grid(this.containerCanvas)
       this.gameOfLife = new GameOfLife(this.grid.center)
       
       this.zoomRange.value = CELL_SIZE
       this.isDragging = false        // resuelve el conflicto entre click y mousedown
-   }
+      this.timer = null              // setInteval save
 
+      this.grid.draw()
+      this.i = 0
+   }
+   
    // Activa o desactiva una celdilla  
    clickCellEvent() {
       canvas.addEventListener('click', (e) => {
@@ -99,9 +104,29 @@ export default class GameControl {
 
    nextControl() {
       this.nextBtn.addEventListener('click', () => {
-         this.gameOfLife.nextGeneration()
-         this.grid.draw()
-         this.grid.paintAllActivatedCells(this.gameOfLife.syncActivatedCells())   
+         this._runGame()   
+      })
+   }
+
+   startControl() {
+      this.startBtn.addEventListener('click', () => {
+         if (this.gameOfLife.activatedCells.length === 0) {
+            alert('no hay vida')
+            return
+         }
+
+         this.startBtn.classList.toggle('is-running')
+         let textButton = this.startBtn.querySelector('span')
+         let speed = 200
+
+         if (this.startBtn.classList.contains('is-running')) {
+            textButton.textContent = 'Stop'
+            this.timer = setInterval(this._runGame.bind(this), speed)
+         }
+         else {
+            clearInterval(this.timer)
+            textButton.textContent = 'Start'
+         }
       })
    }
 
@@ -128,12 +153,29 @@ export default class GameControl {
       this.grid.paintAllActivatedCells(this.gameOfLife.syncActivatedCells())
    }
 
-   run() {
+   _runGame = () => {
+      if (this.gameOfLife.activatedCells.length === 0) {
+         alert('no hay vida')
+         clearInterval(this.timer)
+         this.startBtn.classList.remove('is-running')
+         this.startBtn.querySelector('span').textContent = 'Start'
+         return
+      }
+      this.gameOfLife.generation++
+      this.gameOfLife.nextGeneration()
       this.grid.draw()
+      this.grid.paintAllActivatedCells(this.gameOfLife.syncActivatedCells())
+   }
+   
+   panelControl() {
+      this.zoomControl()
+      this.nextControl()
+      this.startControl()
+   }
+   
+   events() {
       this.clickCellEvent()
       this.dragGrid()
       this.resizeEvent()
-      this.zoomControl()
-      this.nextControl()
    }
 }
