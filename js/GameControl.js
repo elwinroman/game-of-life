@@ -18,7 +18,6 @@ export default class GameControl {
       this.timer = null              // setInteval save
 
       this.grid.draw()
-      this.i = 0
    }
    
    // Activa o desactiva una celdilla  
@@ -52,6 +51,7 @@ export default class GameControl {
       // 1. El evento registra la posicion inicial del click presionado 
       canvas.addEventListener('mousedown', (e) => {
          startPos = getMousePos(e)
+         this.isDragging = false
       })
 
       /* 2. El evento registra el movimiento del mouse 
@@ -85,7 +85,6 @@ export default class GameControl {
          this.grid.draw()
          this.grid.paintAllActivatedCells(this.gameOfLife.syncActivatedCells())
          dx = 0, dy = 0
-         setTimeout(() => { this.isDragging = false }, 200)
       }
    }
 
