@@ -1,4 +1,4 @@
-import { CELL_SIZE } from './config.js'
+import { CELL_SIZE, SPEED } from './config.js'
 import { getMousePos } from './utils.js'
 import Grid from './grid.js'
 import GameOfLife from './GameOfLife.js'
@@ -7,6 +7,7 @@ export default class GameControl {
    constructor() {
       this.containerCanvas = document.querySelector('.canvas-container')
       this.zoomRange = document.getElementById('zoom-range')
+      this.speedRange = document.getElementById('speed-range')
       this.nextBtn = document.querySelector('button.next-btn')
       this.startBtn = document.querySelector('button.start-btn')
       
@@ -14,8 +15,12 @@ export default class GameControl {
       this.gameOfLife = new GameOfLife(this.grid.center)
       
       this.zoomRange.value = CELL_SIZE
+      this.speedRange.value = -SPEED
+
       this.isDragging = false        // resuelve el conflicto entre click y mousedown
       this.timer = null              // setInteval save
+      this.speed = SPEED
+      this.isRunning = false         // juego inicia
 
       this.grid.draw()
    }
@@ -120,16 +125,26 @@ export default class GameControl {
          }
 
          this.startBtn.classList.toggle('is-running')
+         this.isRunning = !this.isRunning
          let textButton = this.startBtn.querySelector('span')
-         let speed = 200
 
-         if (this.startBtn.classList.contains('is-running')) {
+         if (this.isRunning) {
             textButton.textContent = 'Stop'
-            this.timer = setInterval(this._runGame.bind(this), speed)
+            this.timer = setInterval(this._runGame.bind(this), this.speed)
          }
          else {
             clearInterval(this.timer)
             textButton.textContent = 'Start'
+         }
+      })
+   }
+
+   speedControl() {
+      this.speedRange.addEventListener('change', () => {
+         this.speed = -parseInt(this.speedRange.value)
+         if (this.isRunning) {
+            clearInterval(this.timer)
+            this.timer = setInterval(this._runGame, this.speed)
          }
       })
    }
@@ -162,6 +177,7 @@ export default class GameControl {
          alert('no hay vida')
          clearInterval(this.timer)
          this.startBtn.classList.remove('is-running')
+         this.isRunning = false
          this.startBtn.querySelector('span').textContent = 'Start'
          return
       }
@@ -175,6 +191,7 @@ export default class GameControl {
       this.zoomControl()
       this.nextControl()
       this.startControl()
+      this.speedControl()
    }
    
    events() {
