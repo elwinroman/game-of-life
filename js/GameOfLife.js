@@ -74,6 +74,15 @@ export default class GameOfLife {
       return true
    }
 
+   // Resetea los valores cuando se hace click en el boton reset
+   reset() {
+      this.generation = 0
+      this._activatedCells = []
+      this._dragDistance.row = 0
+      this._dragDistance.col = 0
+      // matriz ya se resetea en la funcion this._updateMatrix
+   }
+
    // Ejecuta el algoritmo y las reglas hasta obtener la siguiente generación
    nextGeneration() {
       if (this._activatedCells.length === 0) return

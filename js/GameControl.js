@@ -10,6 +10,7 @@ export default class GameControl {
       this.speedRange = document.getElementById('speed-range')
       this.nextBtn = document.querySelector('button.next-btn')
       this.startBtn = document.querySelector('button.start-btn')
+      this.resetBtn = document.querySelector('button.reset-btn')
       
       this.grid = new Grid(this.containerCanvas)
       this.gameOfLife = new GameOfLife(this.grid.center)
@@ -131,10 +132,12 @@ export default class GameControl {
          if (this.isRunning) {
             textButton.textContent = 'Stop'
             this.timer = setInterval(this._runGame.bind(this), this.speed)
+            this.resetBtn.disabled = true
          }
          else {
             clearInterval(this.timer)
             textButton.textContent = 'Start'
+            this.resetBtn.disabled = false
          }
       })
    }
@@ -146,6 +149,13 @@ export default class GameControl {
             clearInterval(this.timer)
             this.timer = setInterval(this._runGame, this.speed)
          }
+      })
+   }
+
+   resetControl() {
+      this.resetBtn.addEventListener('click', () => {
+         this.grid.draw()
+         this.gameOfLife.reset()
       })
    }
 
@@ -192,6 +202,7 @@ export default class GameControl {
       this.nextControl()
       this.startControl()
       this.speedControl()
+      this.resetControl()
    }
    
    events() {
