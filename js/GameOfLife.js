@@ -61,6 +61,19 @@ export default class GameOfLife {
       })
    }
 
+   // Comprueba si la célula está fuera de los límites
+   isOutOfLimits(cell) {
+      const matrixCell = {
+         row: cell.row + this._syncDistance.row - this._dragDistance.row,
+         col: cell.col + this._syncDistance.col - this._dragDistance.col
+      }
+      if (
+         matrixCell.row > 0 && matrixCell.col > 0 && 
+         matrixCell.row < this._row - 1 && matrixCell.col < this._col - 1
+      ) return false
+      return true
+   }
+
    // Ejecuta el algoritmo y las reglas hasta obtener la siguiente generación
    nextGeneration() {
       if (this._activatedCells.length === 0) return

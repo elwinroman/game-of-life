@@ -31,6 +31,11 @@ export default class GameControl {
             col: Math.floor(mousePos.x / this.grid.cellSize)
          }
 
+         if (this.gameOfLife.isOutOfLimits(cellPos)) {
+            alert('la célula está fuera de los límites')
+            return
+         }
+
          if (this.gameOfLife.isCellActive(cellPos)) {
             this.gameOfLife.deleteCellPos(cellPos)
             this.grid.unpaintCell(cellPos)
