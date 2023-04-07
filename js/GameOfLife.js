@@ -108,11 +108,15 @@ export default class GameOfLife {
          Array(this._col).fill(CELL_OFF)
       )
       
-      for (let cell of this._activatedCells) {
-         let syncRow = cell.row + this._syncDistance.row
-         let syncCol = cell.col + this._syncDistance.col
-         this._matrix[syncRow][syncCol] = CELL_ON
-      }
+      const normalizeActivatedCells = this._activatedCells.map((cell) => {
+         return { 
+            row: cell.row + this._syncDistance.row,
+            col: cell.col + this._syncDistance.col
+         }
+      })
+      // asigna las celulas activadas a la matriz
+      for (let cell of normalizeActivatedCells)
+         this._matrix[cell.row][cell.col] = CELL_ON
    }
    _calculateNeighborsAlive(i, j) {
       let neighbors = 0
