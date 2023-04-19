@@ -2,6 +2,7 @@ import { CELL_SIZE, SPEED } from './config.js'
 import { getMousePos } from './utils.js'
 import Grid from './grid.js'
 import GameOfLife from './GameOfLife.js'
+import Pattern from './src/pattern.js'
 
 export default class GameControl {
    constructor() {
@@ -11,7 +12,9 @@ export default class GameControl {
       this.nextBtn = document.querySelector('button.next-btn')
       this.startBtn = document.querySelector('button.start-btn')
       this.resetBtn = document.querySelector('button.reset-btn')
-      
+      this.gridlineSvg = document.querySelector('svg.toggle-gridlines')
+      this.patternSelect = document.querySelector('.pattern-select')
+
       this.grid = new Grid(this.containerCanvas)
       this.gameOfLife = new GameOfLife(this.grid.center)
       
@@ -159,6 +162,26 @@ export default class GameControl {
       })
    }
 
+   patternControl() {
+      this.patternSelect.addEventListener('change', () => {
+         const pattern_name = this.patternSelect.value
+         const pattern = new Pattern(pattern_name)
+
+         pattern.decodeAsCells()
+            .then(cells => {
+               this.gameOfLife.reset()
+               this.gameOfLife._activatedCells = cells
+               this.gameOfLife.rowDragDistance = this.grid.center.row - Math.floor(pattern.y / 2)
+               this.gameOfLife.colDragDistance = this.grid.center.col - Math.floor(pattern.x / 2)
+               this.grid.draw()
+               this.grid.paintAllActivatedCells(this.gameOfLife.syncActivatedCells())
+            })
+            .catch(() => {
+               console.log('El archivo RLE no existe')
+            })
+      })
+   }
+
    _rebuiltGrid() {
       this.grid.width = this.containerCanvas.clientWidth - 1
       this.grid.height = this.containerCanvas.clientHeight - 1
@@ -203,6 +226,7 @@ export default class GameControl {
       this.startControl()
       this.speedControl()
       this.resetControl()
+      this.patternControl()
    }
    
    events() {

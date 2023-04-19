@@ -156,6 +156,7 @@ export default class GameOfLife {
    // Setters & getters
    set rowDragDistance(row) { this._dragDistance.row = row }
    set colDragDistance(col) { this._dragDistance.col = col }
+   set activatedCells(cells){ this._activatedCells = [...cells] }
    get colDragDistance()    { return this._dragDistance.col }
    get rowDragDistance()    { return this._dragDistance.row }
    get activatedCells()     { return this._activatedCells }
