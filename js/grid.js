@@ -1,4 +1,4 @@
-import { CELL_SIZE, CELL_COLOR_ACTIVE, CELL_COLOR_DEACTIVE } from './config.js'
+import { CELL_SIZE, COLOR } from './config.js'
 
 export default class Grid {
    constructor(containerCanvas) {
@@ -35,31 +35,29 @@ export default class Grid {
          this.ctx.moveTo(this._left, y)
          this.ctx.lineTo(this._right, y)
       }
-      // this.ctx.strokeStyle = '#434656'
-      this.ctx.strokeStyle = '#9FADBD'
+      this.ctx.strokeStyle = COLOR.gridline
       this.ctx.lineWidth = 0.5
       this.ctx.stroke()
    }
 
    paintCell(pos) {
-      this.ctx.fillStyle = CELL_COLOR_ACTIVE
+      this.ctx.fillStyle = COLOR.alive_cell
       this._fillSquare(pos)
    }
 
    _fillSquare(pos) {
       this.ctx.fillRect(
-         pos.col * this._cellSize + 1, pos.row * this._cellSize + 1, 
          this._cellSize - 1, this._cellSize - 1
       )
    }
 
    unpaintCell(pos) {
-      this.ctx.fillStyle = CELL_COLOR_DEACTIVE
+      this.ctx.fillStyle = COLOR.background
       this._fillSquare(pos)
    }
 
    paintAllActivatedCells(activatedCells) {
-      this.ctx.fillStyle = CELL_COLOR_ACTIVE
+      this.ctx.fillStyle = COLOR.alive_cell
       for (let cell of activatedCells)
          this._fillSquare(cell)
    }
@@ -74,6 +72,7 @@ export default class Grid {
    set cellSize(size) { this._cellSize = size }
    set rowCenter(row) { this._center.row = row }
    set colCenter(col) { this._center.col = col }
+   set border(border) { this._border = border }
    get width()        { return this._canvas.width }
    get height()       { return this._canvas.height }
    get cellSize()     { return this._cellSize }
