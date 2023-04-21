@@ -1,75 +1,74 @@
-import { COLUMN_MATRIX, ROW_MATRIX, CELL_ON, CELL_OFF, CELL_SIZE } from './config.js'
+import { COLUMN_MATRIX, ROW_MATRIX, ALIVE, DEAD} from './config.js'
 
-export default class GameOfLife {
+export default class CelullarAutomaton {
    constructor(gridCenter) {
-      this._activatedCells = []    // almacena todas las celdillas activadas
+      this.aliveCells = []    // almacena todas las células vivas
 
       // almacena la distancia recorrida del mouse al arrastrar el grid
-      this._dragDistance = { row: 0, col: 0 }
+      this.dragDistance = { row: 0, col: 0 }
       
-      this._row = ROW_MATRIX
-      this._col = COLUMN_MATRIX
-      this._matrix = Array(this._row).fill().map(() => Array(this._col).fill(CELL_OFF))
-      this._newMatrix = structuredClone(this._matrix)       // matriz de la siguiente generación
+      this.row = ROW_MATRIX
+      this.col = COLUMN_MATRIX
+      this.board = Array(this.row).fill().map(() => Array(this.col).fill(DEAD))
 
       // distancia equivalente entre el centro del grid (vista) y la matriz (database)
-      this._syncDistance = { 
-         row: Math.ceil(this._row / 2) - gridCenter.row,
-         col: Math.ceil(this._col / 2) - gridCenter.col
+      this.syncDistance = { 
+         row: Math.ceil(this.row / 2) - gridCenter.row,
+         col: Math.ceil(this.col / 2) - gridCenter.col
       }
 
       this.generation = 0
    }
 
-   // Comprueba si la celdilla clickeada está previamente activada
-   isCellActive(pos) {
-      return this._activatedCells.some((activatedCell) => {
+   // Comprueba si la célula clickeada por el usuario está viva
+   isCellAlive(cell) {
+      return this.aliveCells.some((aliveCell) => {
          return (
-            activatedCell.row === pos.row - this._dragDistance.row &&
-            activatedCell.col === pos.col - this._dragDistance.col 
+            aliveCell.row === cell.row - this.dragDistance.row &&
+            aliveCell.col === cell.col - this.dragDistance.col 
          )
       })
    }
 
-   // Elimina la posición de una celdilla del array de celdillas activadas
-   deleteCellPos(pos) {
-      const index = this._activatedCells.findIndex((activatedCell) => {
+   // Elimina una célula viva del array (muere)
+   deleteCell(cell) {
+      const index = this.aliveCells.findIndex((aliveCell) => {
          return ( 
-            activatedCell.row === pos.row - this._dragDistance.row &&
-            activatedCell.col === pos.col - this._dragDistance.col
+            aliveCell.row === cell.row - this.dragDistance.row &&
+            aliveCell.col === cell.col - this.dragDistance.col
          )
       })
       
-      this._activatedCells.splice(index, 1)
+      this.aliveCells.splice(index, 1)
    }
 
-   // Sincroniza la posición de las celdillas de la matriz con respecto al lienzo
-   syncActivatedCells() {
-      return this._activatedCells.map(activatedCell => {
+   // Sincroniza la posición de las celúlas vivas de la matriz con respecto al lienzo
+   syncAliveCells() {
+      return this.aliveCells.map(cell => {
          return { 
-            row: activatedCell.row + this._dragDistance.row,
-            col: activatedCell.col + this._dragDistance.col
+            row: cell.row + this.dragDistance.row,
+            col: cell.col + this.dragDistance.col
          }
       })
    }
 
-   // Guarda la posicion de una celdilla clickeada en un array
-   addActivatedCell(pos) {
-      this._activatedCells.push({
-         row: pos.row - this._dragDistance.row,
-         col: pos.col - this._dragDistance.col
+   // Guarda la posicion de una célula clickeada por el usuario en el array de células vivas
+   addCell(cell) {
+      this.aliveCells.push({
+         row: cell.row - this.dragDistance.row,
+         col: cell.col - this.dragDistance.col
       })
    }
 
    // Comprueba si la célula está fuera de los límites
    isOutOfLimits(cell) {
       const matrixCell = {
-         row: cell.row + this._syncDistance.row - this._dragDistance.row,
-         col: cell.col + this._syncDistance.col - this._dragDistance.col
+         row: cell.row + this.syncDistance.row - this.dragDistance.row,
+         col: cell.col + this.syncDistance.col - this.dragDistance.col
       }
       if (
          matrixCell.row > 0 && matrixCell.col > 0 && 
-         matrixCell.row < this._row - 1 && matrixCell.col < this._col - 1
+         matrixCell.row < this.row - 1 && matrixCell.col < this.col - 1
       ) return false
       return true
    }
@@ -77,93 +76,80 @@ export default class GameOfLife {
    // Resetea los valores cuando se hace click en el boton reset
    reset(gridCenter) {
       this.generation = 0
-      this._activatedCells = []
-      this._dragDistance.row = 0
-      this._dragDistance.col = 0
-      this._syncDistance.row = Math.ceil(this._row / 2) - gridCenter.row
-      this._syncDistance.col = Math.ceil(this._col / 2) - gridCenter.col
+      this.aliveCells = []
+      this.dragDistance.row = 0
+      this.dragDistance.col = 0
+      this.syncDistance.row = Math.ceil(this.row / 2) - gridCenter.row
+      this.syncDistance.col = Math.ceil(this.col / 2) - gridCenter.col
       // matriz ya se resetea en la funcion this._updateMatrix
    }
 
    // Ejecuta el algoritmo y las reglas hasta obtener la siguiente generación
    nextGeneration() {
-      if (this._activatedCells.length === 0) return
+      if (this.aliveCells.length === 0) return
 
-      // helper function
-      const addTemporalActivatedCell = (i, j) => {
-         temporalActivatedCells.push({
-            row: i - this._syncDistance.row,
-            col: j - this._syncDistance.col
-         })
-      }
-
-      this._updateMatrix()
-      let temporalActivatedCells = []
+      this._updateBoardWithAliveCells()
+      let nextAliveCells = []
+      let nextBoard = structuredClone(this.board)
       
       // analiza cada célula de la matriz
-      for (let i=1; i<this._row-1; i++) {
-         for (let j=1; j<this._col-1; j++) {
-            const currentCell = this._matrix[i][j]
+      for (let i=1; i<this.row-1; i++) {
+         for (let j=1; j<this.col-1; j++) {
+            const currentCell = this.board[i][j]
             const neighbors = this._calculateNeighborsAlive(i, j)
             
             // reglas
-            if (currentCell === CELL_ON && neighbors < 2)
-               this._newMatrix[i][j] = CELL_OFF       // muere por despoblación
-            else if (currentCell === CELL_ON && neighbors > 3)
-               this._newMatrix[i][j] = CELL_OFF       // muere por sobrepoblacion
-            else if (currentCell === CELL_OFF && neighbors === 3) {
-               this._newMatrix[i][j] = CELL_ON        // nace una nueva célula
-               addTemporalActivatedCell(i, j)
+            if (currentCell === ALIVE && neighbors < 2)
+               nextBoard[i][j] = DEAD       // muere por despoblación
+            else if (currentCell === ALIVE && neighbors > 3)
+               nextBoard[i][j] = DEAD       // muere por sobrepoblacion
+            else if (currentCell === DEAD && neighbors === 3) {
+               nextBoard[i][j] = ALIVE      // nace una nueva célula
+               nextAliveCells.push({
+                  row: i - this.syncDistance.row, col: j - this.syncDistance.col
+               })
             }
             else {
-               this._newMatrix[i][j] = currentCell    // no existen cambios
-               if (currentCell === CELL_ON) addTemporalActivatedCell(i, j)
+               nextBoard[i][j] = currentCell    // no existen cambios
+               if (currentCell === ALIVE)
+                  nextAliveCells.push({
+                     row: i - this.syncDistance.row, col: j - this.syncDistance.col
+                  })
             }
          }
       }
       // actualiza con los datos de la nueva generación
-      this._activatedCells = [...temporalActivatedCells]
-      this._matrix = structuredClone(this._newMatrix)
+      this.aliveCells = [...nextAliveCells]
+      this.board = structuredClone(nextBoard)
    }
 
-   // Actualiza la matriz con las celdillas activadas por click (by user)
-   _updateMatrix() {
-      this._matrix = Array(this._row).fill().map(() => 
-         Array(this._col).fill(CELL_OFF)
+   // Actualiza la matriz con las células vivas
+   _updateBoardWithAliveCells() {
+      this.board = Array(this.row).fill().map(() => 
+         Array(this.col).fill(DEAD)
       )
       
-      const normalizeActivatedCells = this._activatedCells.map((cell) => {
+      const normalizeAliveCells = this.aliveCells.map((cell) => {
          return { 
-            row: cell.row + this._syncDistance.row,
-            col: cell.col + this._syncDistance.col
+            row: cell.row + this.syncDistance.row,
+            col: cell.col + this.syncDistance.col
          }
       })
-      // asigna las celulas activadas a la matriz
-      for (let cell of normalizeActivatedCells)
-         this._matrix[cell.row][cell.col] = CELL_ON
-   }
-   _calculateNeighborsAlive(i, j) {
-      let neighbors = 0
-      if (this._matrix[i-1][j-1] === CELL_ON) neighbors++     // up-left
-      if (this._matrix[i-1][j]   === CELL_ON) neighbors++     // up
-      if (this._matrix[i-1][j+1] === CELL_ON) neighbors++     // up-right
-      if (this._matrix[i][j-1]   === CELL_ON) neighbors++     // left
-      if (this._matrix[i][j+1]   === CELL_ON) neighbors++     // right
-      if (this._matrix[i+1][j-1] === CELL_ON) neighbors++     // bottom-left
-      if (this._matrix[i+1][j]   === CELL_ON) neighbors++     // bottom
-      if (this._matrix[i+1][j+1] === CELL_ON) neighbors++     // bottom-right
-      return neighbors
+      // asigna todas las células vivas a la matriz
+      for (let cell of normalizeAliveCells)
+         this.board[cell.row][cell.col] = ALIVE
    }
 
-   // Setters & getters
-   set rowDragDistance(row) { this._dragDistance.row = row }
-   set colDragDistance(col) { this._dragDistance.col = col }
-   set activatedCells(cells){ this._activatedCells = [...cells] }
-   set rowSyncDistance(row) { this._syncDistance.row = row }
-   set colSyncDistance(col) { this._syncDistance.col = col }
-   get colDragDistance()    { return this._dragDistance.col }
-   get rowDragDistance()    { return this._dragDistance.row }
-   get activatedCells()     { return this._activatedCells }
-   get row()                { return this._row }
-   get col()                { return this._col }
+   _calculateNeighborsAlive(i, j) {
+      let neighbors = 0
+      if (this.board[i-1][j-1] === ALIVE) neighbors++     // up-left
+      if (this.board[i-1][j]   === ALIVE) neighbors++     // up
+      if (this.board[i-1][j+1] === ALIVE) neighbors++     // up-right
+      if (this.board[i][j-1]   === ALIVE) neighbors++     // left
+      if (this.board[i][j+1]   === ALIVE) neighbors++     // right
+      if (this.board[i+1][j-1] === ALIVE) neighbors++     // bottom-left
+      if (this.board[i+1][j]   === ALIVE) neighbors++     // bottom
+      if (this.board[i+1][j+1] === ALIVE) neighbors++     // bottom-right
+      return neighbors
+   }
 }

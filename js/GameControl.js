@@ -1,25 +1,18 @@
 import { CELL_SIZE, SPEED, COLOR } from './config.js'
 import { getMousePos } from './utils.js'
 import Grid from './grid.js'
-import GameOfLife from './GameOfLife.js'
+import CelullarAutomaton from './GameOfLife.js'
 import Pattern from './src/pattern.js'
 
 export default class GameControl {
    constructor() {
       this.containerCanvas = document.querySelector('.canvas-container')
-      this.zoomRange = document.getElementById('zoom-range')
-      this.speedRange = document.getElementById('speed-range')
-      this.nextBtn = document.querySelector('button.next-btn')
       this.startBtn = document.querySelector('button.start-btn')
       this.resetBtn = document.querySelector('button.reset-btn')
-      this.gridlineSvg = document.querySelector('svg.toggle-gridlines')
       this.patternSelect = document.querySelector('.pattern-select')
 
       this.grid = new Grid(this.containerCanvas)
-      this.gameOfLife = new GameOfLife(this.grid.center)
-      
-      this.zoomRange.value = CELL_SIZE
-      this.speedRange.value = -SPEED
+      this.ca = new CelullarAutomaton(this.grid.center)
 
       this.isDragging = false        // resuelve el conflicto entre click y mousedown
       this.timer = null              // setInteval save
@@ -30,29 +23,29 @@ export default class GameControl {
       this.grid.draw()
    }
    
-   // Activa o desactiva una celdilla  
+   // Activa o desactiva una celula
    clickCellEvent() {
       canvas.addEventListener('click', (e) => {
          if (this.isDragging) return
 
          const mousePos = getMousePos(e);
-         const cellPos = {     // posición de la celda clickeada
+         const cell = {     // posición de la celda clickeada
             row: Math.floor(mousePos.y / this.grid.cellSize),
             col: Math.floor(mousePos.x / this.grid.cellSize)
          }
 
-         if (this.gameOfLife.isOutOfLimits(cellPos)) {
+         if (this.ca.isOutOfLimits(cell)) {
             alert('la célula está fuera de los límites')
             return
          }
 
-         if (this.gameOfLife.isCellActive(cellPos)) {
-            this.gameOfLife.deleteCellPos(cellPos)
-            this.grid.unpaintCell(cellPos)
+         if (this.ca.isCellAlive(cell)) {
+            this.ca.deleteCell(cell)
+            this.grid.unpaintCell(cell)
          }
          else {
-            this.gameOfLife.addActivatedCell(cellPos)
-            this.grid.paintCell(cellPos)
+            this.ca.addCell(cell)
+            this.grid.paintCell(cell)
          }
       })
    }
@@ -81,7 +74,7 @@ export default class GameControl {
 
          this.grid.ctx.translate(dx_t, dy_t)
          this.grid.draw()
-         this.grid.paintAllActivatedCells(this.gameOfLife.syncActivatedCells())
+         this.grid.paintAllAliveCells(this.ca.syncAliveCells())
          startPos = mousePos
          dx += dx_t, dy += dy_t
       })
@@ -94,37 +87,42 @@ export default class GameControl {
       const reset = () => {
          startPos = null
          
-         this.gameOfLife.rowDragDistance += (Math.floor(dy / this.grid.cellSize))
-         this.gameOfLife.colDragDistance += (Math.floor(dx / this.grid.cellSize))
+         this.ca.dragDistance.row += (Math.floor(dy / this.grid.cellSize))
+         this.ca.dragDistance.col += (Math.floor(dx / this.grid.cellSize))
          this.grid.ctx.setTransform(1, 0, 0, 1, 0, 0)    // resetea la traslación
          this.grid.draw()
-         this.grid.paintAllActivatedCells(this.gameOfLife.syncActivatedCells())
+         this.grid.paintAllAliveCells(this.ca.syncAliveCells())
          dx = 0, dy = 0
       }
    }
 
    resizeEvent() {
       window.addEventListener('resize', () => {
-         this._rebuiltGrid()
+         this._reconfigure()
       })
    }
 
    zoomControl() {
-      this.zoomRange.addEventListener('change', () => {
-         this.grid.cellSize = parseInt(this.zoomRange.value)
-         this._rebuiltGrid()
+      const zoomRange = document.getElementById('zoom-range')
+      zoomRange.value = CELL_SIZE
+
+      zoomRange.addEventListener('change', () => {
+         this.grid.cellSize = parseInt(zoomRange.value)
+         this._reconfigure()
       })
    }
 
    nextControl() {
-      this.nextBtn.addEventListener('click', () => {
+      const nextBtn = document.querySelector('button.next-btn')
+
+      nextBtn.addEventListener('click', () => {
          this._runGame()   
       })
    }
 
    startControl() {
       this.startBtn.addEventListener('click', () => {
-         if (this.gameOfLife.activatedCells.length === 0) {
+         if (this.ca.aliveCells.length === 0) {
             alert('no hay vida')
             return
          }
@@ -147,8 +145,12 @@ export default class GameControl {
    }
 
    speedControl() {
-      this.speedRange.addEventListener('change', () => {
-         this.speed = -parseInt(this.speedRange.value)
+      const speedRange = document.getElementById('speed-range')
+      speedRange.value = -SPEED
+
+      speedRange.addEventListener('change', () => {
+         this.speed = -parseInt(speedRange.value)
+
          if (this.isRunning) {
             clearInterval(this.timer)
             this.timer = setInterval(this._runGame, this.speed)
@@ -159,7 +161,7 @@ export default class GameControl {
    resetControl() {
       this.resetBtn.addEventListener('click', () => {
          this.grid.draw()
-         this.gameOfLife.reset(this.grid.center)
+         this.ca.reset(this.grid.center)
       })
    }
 
@@ -170,21 +172,21 @@ export default class GameControl {
 
          pattern.decodeAsCells()
             .then(cells => {
-               this.gameOfLife.reset(this.grid.center)
+               this.ca.reset(this.grid.center)
 
                // para centrar el pattern en el grid
-               const centerOnRow = this.grid.center.row - Math.floor(pattern.y / 2)
-               const centerOnCol = this.grid.center.col - Math.floor(pattern.x / 2)
+               const centerOnRow = this.grid.center.row - Math.floor(pattern.height / 2)
+               const centerOnCol = this.grid.center.col - Math.floor(pattern.width / 2)
                const centeredCells = cells.map((cell) => {
                   return { 
                      row: cell.row + centerOnRow, 
                      col: cell.col + centerOnCol 
                   }
                })
-               this.gameOfLife._activatedCells = centeredCells
+               this.ca.aliveCells = centeredCells
 
                this.grid.draw()
-               this.grid.paintAllActivatedCells(this.gameOfLife.syncActivatedCells())
+               this.grid.paintAllAliveCells(this.ca.syncAliveCells())
             })
             .catch(() => {
                console.log('El archivo RLE no existe')
@@ -208,35 +210,29 @@ export default class GameControl {
          }
 
          this.grid.draw()
-         this.grid.paintAllActivatedCells(this.gameOfLife.syncActivatedCells())
+         this.grid.paintAllAliveCells(this.ca.syncAliveCells())
       })
    }
 
-   _rebuiltGrid() {
-      this.grid.width = this.containerCanvas.clientWidth - 1
-      this.grid.height = this.containerCanvas.clientHeight - 1
-      this.grid.left = -Math.ceil(this.grid.width / this.grid.cellSize) * this.grid.cellSize + 0.5
-      this.grid.top = -Math.ceil(this.grid.height / this.grid.cellSize) * this.grid.cellSize + 0.5
-      this.grid.right = this.grid.width * 2
-      this.grid.bottom = this.grid.height * 2
-
+   _reconfigure() {
+      this.grid.recalculate(this.containerCanvas)
+      
       // mantiene el centro del grid cada vez que se hace un zoom en el grid o resize en el browser
       const oldGridCenter = {...this.grid.center}
       const newGridCenter = {
-         row: Math.ceil(Math.ceil(this.grid.height / this.grid.cellSize) / 2),
-         col: Math.ceil(Math.ceil(this.grid.width / this.grid.cellSize) / 2)
+         row: Math.ceil(Math.ceil(this.grid.canvas.height / this.grid.cellSize) / 2),
+         col: Math.ceil(Math.ceil(this.grid.canvas.width / this.grid.cellSize) / 2)
       }
-      this.grid.rowCenter = newGridCenter.row
-      this.grid.colCenter = newGridCenter.col
-      this.gameOfLife.rowDragDistance += newGridCenter.row - oldGridCenter.row
-      this.gameOfLife.colDragDistance += newGridCenter.col - oldGridCenter.col
+      this.grid.center = {...newGridCenter}
+      this.ca.dragDistance.row += newGridCenter.row - oldGridCenter.row
+      this.ca.dragDistance.col += newGridCenter.col - oldGridCenter.col
 
       this.grid.draw()
-      this.grid.paintAllActivatedCells(this.gameOfLife.syncActivatedCells())
+      this.grid.paintAllAliveCells(this.ca.syncAliveCells())
    }
 
    _runGame = () => {
-      if (this.gameOfLife.activatedCells.length === 0) {
+      if (this.ca.aliveCells.length === 0) {
          alert('no hay vida')
          clearInterval(this.timer)
          this.startBtn.classList.remove('is-running')
@@ -244,10 +240,10 @@ export default class GameControl {
          this.startBtn.querySelector('span').textContent = 'Start'
          return
       }
-      this.gameOfLife.generation++
-      this.gameOfLife.nextGeneration()
+      this.ca.generation++
+      this.ca.nextGeneration()
       this.grid.draw()
-      this.grid.paintAllActivatedCells(this.gameOfLife.syncActivatedCells())
+      this.grid.paintAllAliveCells(this.ca.syncAliveCells())
    }
    
    panelControl() {

@@ -2,43 +2,44 @@ import { CELL_SIZE, COLOR } from './config.js'
 
 export default class Grid {
    constructor(containerCanvas) {
-      this._canvas = document.getElementById('canvas')
+      this.canvas = document.getElementById('canvas')
       
-      this.ctx = this._canvas.getContext('2d')
-      this._canvas.width  = containerCanvas.clientWidth - 1
-      this._canvas.height = containerCanvas.clientHeight - 1
-      this._cellSize = CELL_SIZE
+      this.ctx = this.canvas.getContext('2d')
+      this.canvas.width  = containerCanvas.clientWidth - 1
+      this.canvas.height = containerCanvas.clientHeight - 1
+      this.cellSize = CELL_SIZE
 
-      this._left = -Math.ceil(this._canvas.width / this._cellSize) * this._cellSize + 0.5
-      this._top = -Math.ceil(this._canvas.height / this._cellSize) * this._cellSize + 0.5
-      this._right = this.ctx.canvas.width * 2
-      this._bottom = this.ctx.canvas.width * 2
+      this.left = -Math.ceil(this.canvas.width / this.cellSize) * this.cellSize + 0.5
+      this.top = -Math.ceil(this.canvas.height / this.cellSize) * this.cellSize + 0.5
+      this.right = this.ctx.canvas.width * 2
+      this.bottom = this.ctx.canvas.width * 2
 
-      this._center = {
-         row: Math.ceil(Math.ceil(this._canvas.height / this._cellSize) / 2),
-         col: Math.ceil(Math.ceil(this._canvas.width / this._cellSize) / 2)
+      this.center = {
+         row: Math.ceil(Math.ceil(this.canvas.height / this.cellSize) / 2),
+         col: Math.ceil(Math.ceil(this.canvas.width / this.cellSize) / 2)
       }
 
-      this._border = 1
-      this._gridlineColor = COLOR.gridline
+      this.border = 1
+      this.gridlineColor = COLOR.gridline
    }
 
+   // Dibuja la cuadricula en el canvas (cada vez que es invocado, resetea el lienzo)
    draw() {
       this.ctx.beginPath()
-      this.ctx.clearRect(this._left, this._top, this._right - this._left, this._bottom - this._top)
+      this.ctx.clearRect(this.left, this.top, this.right - this.left, this.bottom - this.top)
       
       // lineas verticales (columnas)
-      for (let x=this._left; x<this._right; x+=this._cellSize) {
-         this.ctx.moveTo(x, this._top)
-         this.ctx.lineTo(x, this._bottom)
+      for (let x=this.left; x<this.right; x+=this.cellSize) {
+         this.ctx.moveTo(x, this.top)
+         this.ctx.lineTo(x, this.bottom)
       }
       
       // lineas horizontales (filas)
-      for (let y=this._top; y<this._bottom; y+=this._cellSize) {
-         this.ctx.moveTo(this._left, y)
-         this.ctx.lineTo(this._right, y)
+      for (let y=this.top; y<this.bottom; y+=this.cellSize) {
+         this.ctx.moveTo(this.left, y)
+         this.ctx.lineTo(this.right, y)
       }
-      this.ctx.strokeStyle = this._gridlineColor
+      this.ctx.strokeStyle = this.gridlineColor
       this.ctx.lineWidth = 0.5
       this.ctx.stroke()
    }
@@ -50,8 +51,8 @@ export default class Grid {
 
    _fillSquare(pos) {
       this.ctx.fillRect(
-         pos.col * this._cellSize + this._border, pos.row * this._cellSize + this._border,
-         this._cellSize - this._border, this._cellSize - this._border
+         pos.col * this.cellSize + this.border, pos.row * this.cellSize + this.border,
+         this.cellSize - this.border, this.cellSize - this.border
       )
    }
 
@@ -60,28 +61,18 @@ export default class Grid {
       this._fillSquare(pos)
    }
 
-   paintAllActivatedCells(activatedCells) {
+   paintAllAliveCells(aliveCells) {
       this.ctx.fillStyle = COLOR.alive_cell
-      for (let cell of activatedCells)
+      for (let cell of aliveCells)
          this._fillSquare(cell)
    }
 
-   // Setters & getters
-   set width(width)   { this._canvas.width = width }
-   set height(height) { this._canvas.height = height }
-   set left(left)     { this._left = left }
-   set top(top)       { this._top = top }
-   set right(right)   { this._right = right }
-   set bottom(bottom) { this._bottom = bottom }
-   set cellSize(size) { this._cellSize = size }
-   set rowCenter(row) { this._center.row = row }
-   set colCenter(col) { this._center.col = col }
-   set border(border) { this._border = border }
-   get width()        { return this._canvas.width }
-   get height()       { return this._canvas.height }
-   get cellSize()     { return this._cellSize }
-   get center()       { return this._center }
-
-   set gridlineColor(color) { this._gridlineColor = color }
-   get gridlineColor()      { return this._gridlineColor }
+   recalculate(containerCanvas) {
+      this.canvas.width = containerCanvas.clientWidth - 1
+      this.canvas.height = containerCanvas.clientHeight - 1
+      this.left = -Math.ceil(this.canvas.width / this.cellSize) * this.cellSize + 0.5
+      this.top = -Math.ceil(this.canvas.height / this.cellSize) * this.cellSize + 0.5
+      this.right = this.canvas.width * 2
+      this.bottom = this.canvas.height * 2
+   }
 }
