@@ -18,6 +18,9 @@ export default class Grid {
          row: Math.ceil(Math.ceil(this._canvas.height / this._cellSize) / 2),
          col: Math.ceil(Math.ceil(this._canvas.width / this._cellSize) / 2)
       }
+
+      this._border = 1
+      this._gridlineColor = COLOR.gridline
    }
 
    draw() {
@@ -35,7 +38,7 @@ export default class Grid {
          this.ctx.moveTo(this._left, y)
          this.ctx.lineTo(this._right, y)
       }
-      this.ctx.strokeStyle = COLOR.gridline
+      this.ctx.strokeStyle = this._gridlineColor
       this.ctx.lineWidth = 0.5
       this.ctx.stroke()
    }
@@ -47,7 +50,8 @@ export default class Grid {
 
    _fillSquare(pos) {
       this.ctx.fillRect(
-         this._cellSize - 1, this._cellSize - 1
+         pos.col * this._cellSize + this._border, pos.row * this._cellSize + this._border,
+         this._cellSize - this._border, this._cellSize - this._border
       )
    }
 
@@ -77,4 +81,7 @@ export default class Grid {
    get height()       { return this._canvas.height }
    get cellSize()     { return this._cellSize }
    get center()       { return this._center }
+
+   set gridlineColor(color) { this._gridlineColor = color }
+   get gridlineColor()      { return this._gridlineColor }
 }

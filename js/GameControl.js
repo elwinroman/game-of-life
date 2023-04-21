@@ -1,4 +1,4 @@
-import { CELL_SIZE, SPEED } from './config.js'
+import { CELL_SIZE, SPEED, COLOR } from './config.js'
 import { getMousePos } from './utils.js'
 import Grid from './grid.js'
 import GameOfLife from './GameOfLife.js'
@@ -25,6 +25,7 @@ export default class GameControl {
       this.timer = null              // setInteval save
       this.speed = SPEED
       this.isRunning = false         // juego inicia
+      this.hasGridline = false       // tiene gridline?
 
       this.grid.draw()
    }
@@ -191,6 +192,26 @@ export default class GameControl {
       })
    }
 
+   // Oculta o muestra las lineas de la cuadrícula
+   gridlineControl() {
+      const toggleGridlineIcon = document.querySelector('svg.toggle-gridline')
+
+      toggleGridlineIcon.addEventListener('click', () => {
+         this.hasGridline = !this.hasGridline
+         
+         if (this.hasGridline) {
+            this.grid.border = 0.1
+            this.grid.gridlineColor = COLOR.background
+         } else {
+            this.grid.border = 1
+            this.grid.gridlineColor = COLOR.gridline
+         }
+
+         this.grid.draw()
+         this.grid.paintAllActivatedCells(this.gameOfLife.syncActivatedCells())
+      })
+   }
+
    _rebuiltGrid() {
       this.grid.width = this.containerCanvas.clientWidth - 1
       this.grid.height = this.containerCanvas.clientHeight - 1
@@ -236,6 +257,7 @@ export default class GameControl {
       this.speedControl()
       this.resetControl()
       this.patternControl()
+      this.gridlineControl()
    }
    
    events() {
