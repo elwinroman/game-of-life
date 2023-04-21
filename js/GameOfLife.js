@@ -75,11 +75,13 @@ export default class GameOfLife {
    }
 
    // Resetea los valores cuando se hace click en el boton reset
-   reset() {
+   reset(gridCenter) {
       this.generation = 0
       this._activatedCells = []
       this._dragDistance.row = 0
       this._dragDistance.col = 0
+      this._syncDistance.row = Math.ceil(this._row / 2) - gridCenter.row
+      this._syncDistance.col = Math.ceil(this._col / 2) - gridCenter.col
       // matriz ya se resetea en la funcion this._updateMatrix
    }
 
@@ -157,7 +159,11 @@ export default class GameOfLife {
    set rowDragDistance(row) { this._dragDistance.row = row }
    set colDragDistance(col) { this._dragDistance.col = col }
    set activatedCells(cells){ this._activatedCells = [...cells] }
+   set rowSyncDistance(row) { this._syncDistance.row = row }
+   set colSyncDistance(col) { this._syncDistance.col = col }
    get colDragDistance()    { return this._dragDistance.col }
    get rowDragDistance()    { return this._dragDistance.row }
    get activatedCells()     { return this._activatedCells }
+   get row()                { return this._row }
+   get col()                { return this._col }
 }

@@ -158,7 +158,7 @@ export default class GameControl {
    resetControl() {
       this.resetBtn.addEventListener('click', () => {
          this.grid.draw()
-         this.gameOfLife.reset()
+         this.gameOfLife.reset(this.grid.center)
       })
    }
 
@@ -169,10 +169,19 @@ export default class GameControl {
 
          pattern.decodeAsCells()
             .then(cells => {
-               this.gameOfLife.reset()
-               this.gameOfLife._activatedCells = cells
-               this.gameOfLife.rowDragDistance = this.grid.center.row - Math.floor(pattern.y / 2)
-               this.gameOfLife.colDragDistance = this.grid.center.col - Math.floor(pattern.x / 2)
+               this.gameOfLife.reset(this.grid.center)
+
+               // para centrar el pattern en el grid
+               const centerOnRow = this.grid.center.row - Math.floor(pattern.y / 2)
+               const centerOnCol = this.grid.center.col - Math.floor(pattern.x / 2)
+               const centeredCells = cells.map((cell) => {
+                  return { 
+                     row: cell.row + centerOnRow, 
+                     col: cell.col + centerOnCol 
+                  }
+               })
+               this.gameOfLife._activatedCells = centeredCells
+
                this.grid.draw()
                this.grid.paintAllActivatedCells(this.gameOfLife.syncActivatedCells())
             })
