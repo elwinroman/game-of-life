@@ -74,7 +74,7 @@ export default class GameControl {
 
          this.grid.ctx.translate(dx_t, dy_t)
          this.grid.draw()
-         this.grid.paintAllAliveCells(this.ca.syncAliveCells())
+         this.grid.paintAllAliveCells(this.ca.gridAliveCells)
          startPos = mousePos
          dx += dx_t, dy += dy_t
       })
@@ -91,7 +91,7 @@ export default class GameControl {
          this.ca.dragDistance.col += (Math.floor(dx / this.grid.cellSize))
          this.grid.ctx.setTransform(1, 0, 0, 1, 0, 0)    // resetea la traslación
          this.grid.draw()
-         this.grid.paintAllAliveCells(this.ca.syncAliveCells())
+         this.grid.paintAllAliveCells(this.ca.gridAliveCells)
          dx = 0, dy = 0
       }
    }
@@ -179,14 +179,14 @@ export default class GameControl {
                const centerOnCol = this.grid.center.col - Math.floor(pattern.width / 2)
                const centeredCells = cells.map((cell) => {
                   return { 
-                     row: cell.row + centerOnRow, 
-                     col: cell.col + centerOnCol 
+                     row: cell.row + centerOnRow + this.ca.syncDistance.row, 
+                     col: cell.col + centerOnCol + this.ca.syncDistance.col
                   }
                })
-               this.ca.aliveCells = centeredCells
+               this.ca.addPatternCells(centeredCells)
 
                this.grid.draw()
-               this.grid.paintAllAliveCells(this.ca.syncAliveCells())
+               this.grid.paintAllAliveCells(this.ca.gridAliveCells)
             })
             .catch(() => {
                console.log('El archivo RLE no existe')
@@ -210,7 +210,7 @@ export default class GameControl {
          }
 
          this.grid.draw()
-         this.grid.paintAllAliveCells(this.ca.syncAliveCells())
+         this.grid.paintAllAliveCells(this.ca.gridAliveCells)
       })
    }
 
@@ -228,7 +228,7 @@ export default class GameControl {
       this.ca.dragDistance.col += newGridCenter.col - oldGridCenter.col
 
       this.grid.draw()
-      this.grid.paintAllAliveCells(this.ca.syncAliveCells())
+      this.grid.paintAllAliveCells(this.ca.gridAliveCells)
    }
 
    _runGame = () => {
@@ -243,7 +243,7 @@ export default class GameControl {
       this.ca.generation++
       this.ca.nextGeneration()
       this.grid.draw()
-      this.grid.paintAllAliveCells(this.ca.syncAliveCells())
+      this.grid.paintAllAliveCells(this.ca.gridAliveCells)
    }
    
    panelControl() {

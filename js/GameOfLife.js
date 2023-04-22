@@ -11,7 +11,7 @@ export default class CelullarAutomaton {
       this.col = COLUMN_MATRIX
       this.board = Array(this.row).fill().map(() => Array(this.col).fill(DEAD))
 
-      // distancia equivalente entre el centro del grid (vista) y la matriz (database)
+      // distancia equivalente entre el centro del grid (vista) y el board (matriz)
       this.syncDistance = { 
          row: Math.ceil(this.row / 2) - gridCenter.row,
          col: Math.ceil(this.col / 2) - gridCenter.col
@@ -22,54 +22,47 @@ export default class CelullarAutomaton {
 
    // Comprueba si la célula clickeada por el usuario está viva
    isCellAlive(cell) {
-      return this.aliveCells.some((aliveCell) => {
-         return (
-            aliveCell.row === cell.row - this.dragDistance.row &&
-            aliveCell.col === cell.col - this.dragDistance.col 
-         )
-      })
+      const { row, col } = this._syncToBoard(cell)
+
+      return this.board[row][col] === ALIVE ? true : false
    }
 
-   // Elimina una célula viva del array (muere)
+   // Elimina una célula viva(muere)
    deleteCell(cell) {
+      const { row, col } = this._syncToBoard(cell)
+
       const index = this.aliveCells.findIndex((aliveCell) => {
          return ( 
-            aliveCell.row === cell.row - this.dragDistance.row &&
-            aliveCell.col === cell.col - this.dragDistance.col
+            aliveCell.row === row &&
+            aliveCell.col === col
          )
       })
-      
+      this.board[row][col] = DEAD
       this.aliveCells.splice(index, 1)
    }
 
-   // Sincroniza la posición de las celúlas vivas de la matriz con respecto al lienzo
-   syncAliveCells() {
-      return this.aliveCells.map(cell => {
-         return { 
-            row: cell.row + this.dragDistance.row,
-            col: cell.col + this.dragDistance.col
-         }
-      })
+   // Guarda la posicion de una célula clickeada por el usuario
+   addCell(cell) {
+      const { row, col } = this._syncToBoard(cell)
+
+      this.board[row][col] = ALIVE
+      this.aliveCells.push({ row, col })
    }
 
-   // Guarda la posicion de una célula clickeada por el usuario en el array de células vivas
-   addCell(cell) {
-      this.aliveCells.push({
-         row: cell.row - this.dragDistance.row,
-         col: cell.col - this.dragDistance.col
-      })
+   // Agrega las células vivas generados al escoger un Pattern
+   addPatternCells(cells) {
+      this.aliveCells = [...cells]
+      for (let {row, col} of cells)
+         this.board[row][col] = ALIVE
+
    }
 
    // Comprueba si la célula está fuera de los límites
    isOutOfLimits(cell) {
-      const matrixCell = {
-         row: cell.row + this.syncDistance.row - this.dragDistance.row,
-         col: cell.col + this.syncDistance.col - this.dragDistance.col
-      }
-      if (
-         matrixCell.row > 0 && matrixCell.col > 0 && 
-         matrixCell.row < this.row - 1 && matrixCell.col < this.col - 1
-      ) return false
+      const { row, col } = this._syncToBoard(cell)
+      
+      if (row > 0 && col > 0 && row < this.row - 1 && col < this.col - 1)
+         return false
       return true
    }
 
@@ -81,14 +74,15 @@ export default class CelullarAutomaton {
       this.dragDistance.col = 0
       this.syncDistance.row = Math.ceil(this.row / 2) - gridCenter.row
       this.syncDistance.col = Math.ceil(this.col / 2) - gridCenter.col
-      // matriz ya se resetea en la funcion this._updateMatrix
+      this.board = Array(this.row).fill().map(() => 
+         Array(this.col).fill(DEAD)
+      )
    }
 
    // Ejecuta el algoritmo y las reglas hasta obtener la siguiente generación
    nextGeneration() {
       if (this.aliveCells.length === 0) return
 
-      this._updateBoardWithAliveCells()
       let nextAliveCells = []
       let nextBoard = structuredClone(this.board)
       
@@ -105,39 +99,18 @@ export default class CelullarAutomaton {
                nextBoard[i][j] = DEAD       // muere por sobrepoblacion
             else if (currentCell === DEAD && neighbors === 3) {
                nextBoard[i][j] = ALIVE      // nace una nueva célula
-               nextAliveCells.push({
-                  row: i - this.syncDistance.row, col: j - this.syncDistance.col
-               })
+               nextAliveCells.push({ row: i, col: j })
             }
             else {
                nextBoard[i][j] = currentCell    // no existen cambios
                if (currentCell === ALIVE)
-                  nextAliveCells.push({
-                     row: i - this.syncDistance.row, col: j - this.syncDistance.col
-                  })
+                  nextAliveCells.push({ row: i, col: j })
             }
          }
       }
-      // actualiza con los datos de la nueva generación
+      // actualiza los datos de la nueva generación
       this.aliveCells = [...nextAliveCells]
       this.board = structuredClone(nextBoard)
-   }
-
-   // Actualiza la matriz con las células vivas
-   _updateBoardWithAliveCells() {
-      this.board = Array(this.row).fill().map(() => 
-         Array(this.col).fill(DEAD)
-      )
-      
-      const normalizeAliveCells = this.aliveCells.map((cell) => {
-         return { 
-            row: cell.row + this.syncDistance.row,
-            col: cell.col + this.syncDistance.col
-         }
-      })
-      // asigna todas las células vivas a la matriz
-      for (let cell of normalizeAliveCells)
-         this.board[cell.row][cell.col] = ALIVE
    }
 
    _calculateNeighborsAlive(i, j) {
@@ -151,5 +124,23 @@ export default class CelullarAutomaton {
       if (this.board[i+1][j]   === ALIVE) neighbors++     // bottom
       if (this.board[i+1][j+1] === ALIVE) neighbors++     // bottom-right
       return neighbors
+   }
+
+   // Sincroniza la posición de una célula en el grid respecto al board (matriz)
+   _syncToBoard(cell) {
+      return {
+         row: cell.row + this.syncDistance.row - this.dragDistance.row,
+         col: cell.col + this.syncDistance.col - this.dragDistance.col,
+      }
+   }
+
+   // Sincroniza y devuelve la posición de las celúlas vivas del board respecto al lienzo (grid)
+   get gridAliveCells() {
+      return this.aliveCells.map(cell => {
+         return { 
+            row: cell.row - this.syncDistance.row + this.dragDistance.row,
+            col: cell.col - this.syncDistance.col + this.dragDistance.col
+         }
+      })
    }
 }
