@@ -1,17 +1,12 @@
 import { CELL_SIZE, SPEED, COLOR } from './config.js'
-import { getMousePos } from './utils.js'
+import { getMousePos, cssRunningGame, cssStoppedGame, listElement } from './utils.js'
 import Grid from './grid.js'
 import CelullarAutomaton from './GameOfLife.js'
 import Pattern from './src/pattern.js'
 
 export default class GameControl {
    constructor() {
-      this.containerCanvas = document.querySelector('.canvas-container')
-      this.startBtn = document.querySelector('button.start-btn')
-      this.resetBtn = document.querySelector('button.reset-btn')
-      this.patternSelect = document.querySelector('.pattern-select')
-
-      this.grid = new Grid(this.containerCanvas)
+      this.grid = new Grid(listElement.containerCanvas)
       this.ca = new CelullarAutomaton(this.grid.center)
 
       this.isDragging = false        // resuelve el conflicto entre click y mousedown
@@ -26,7 +21,7 @@ export default class GameControl {
    // Activa o desactiva una celula
    clickCellEvent() {
       canvas.addEventListener('click', (e) => {
-         if (this.isDragging) return
+         if (this.isDragging || this.isRunning) return
 
          const mousePos = getMousePos(e);
          const cell = {     // posición de la celda clickeada
@@ -104,43 +99,37 @@ export default class GameControl {
    }
 
    zoomControl() {
-      const zoomRange = document.getElementById('zoom-range')
-      zoomRange.value = CELL_SIZE
+      listElement.zoomRange.value = CELL_SIZE
 
-      zoomRange.addEventListener('change', () => {
-         this.grid.cellSize = parseInt(zoomRange.value)
+      listElement.zoomRange.addEventListener('change', () => {
+         this.grid.cellSize = parseInt(listElement.zoomRange.value)
          this._reconfigure()
       })
    }
 
    nextControl() {
-      const nextBtn = document.querySelector('button.next-btn')
+      listElement.nextBtn.addEventListener('click', () => {
+         if (this.isRunning) return
 
-      nextBtn.addEventListener('click', () => {
          this._runGame()   
       })
    }
 
    startControl() {
-      this.startBtn.addEventListener('click', () => {
+      listElement.startBtn.addEventListener('click', () => {
          if (this.ca.aliveCells.length === 0) {
             alert('no hay vida')
             return
          }
 
-         this.startBtn.classList.toggle('is-running')
          this.isRunning = !this.isRunning
-         let textButton = this.startBtn.querySelector('span')
-
          if (this.isRunning) {
-            textButton.textContent = 'Stop'
             this.timer = setInterval(this._runGame.bind(this), this.speed)
-            this.resetBtn.disabled = true
+            cssRunningGame()
          }
          else {
             clearInterval(this.timer)
-            textButton.textContent = 'Start'
-            this.resetBtn.disabled = false
+            cssStoppedGame()
          }
       })
    }
@@ -160,15 +149,19 @@ export default class GameControl {
    }
 
    resetControl() {
-      this.resetBtn.addEventListener('click', () => {
+      listElement.resetBtn.addEventListener('click', () => {
+         if (this.isRunning) return
+
          this.grid.draw()
          this.ca.reset(this.grid.center)
       })
    }
 
    patternControl() {
-      this.patternSelect.addEventListener('change', () => {
-         const pattern_name = this.patternSelect.value
+      listElement.patternSelect.addEventListener('change', () => {
+         if (this.isRunning) return
+
+         const pattern_name = listElement.patternSelect.value
          const pattern = new Pattern(pattern_name)
 
          pattern.decodeAsCells()
@@ -197,9 +190,7 @@ export default class GameControl {
 
    // Oculta o muestra las lineas de la cuadrícula
    gridlineControl() {
-      const toggleGridlineIcon = document.querySelector('svg.toggle-gridline')
-
-      toggleGridlineIcon.addEventListener('click', () => {
+      listElement.toggleGridlineIcon.addEventListener('click', () => {
          this.hasGridline = !this.hasGridline
          
          if (this.hasGridline) {
@@ -216,7 +207,7 @@ export default class GameControl {
    }
 
    _reconfigure() {
-      this.grid.recalculate(this.containerCanvas)
+      this.grid.recalculate(listElement.containerCanvas)
       
       // mantiene el centro del grid cada vez que se hace un zoom en el grid o resize en el browser
       const oldGridCenter = {...this.grid.center}
@@ -264,9 +255,9 @@ export default class GameControl {
       if (this.ca.aliveCells.length === 0) {
          alert('no hay vida')
          clearInterval(this.timer)
-         this.startBtn.classList.remove('is-running')
          this.isRunning = false
          this.startBtn.querySelector('span').textContent = 'Start'
+         cssStoppedGame()
          return
       }
       this.ca.generation++
