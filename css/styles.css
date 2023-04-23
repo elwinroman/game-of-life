@@ -1,15 +1,10 @@
-* {
-	margin: 0; padding: 0;
-	box-sizing: border-box;
-   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto;
-}
+@import url('global.css');
+@import url('range.css');
+
 body {
    background: url('/assets/img/grid.png');
    background-repeat: repeat;
    backdrop-filter: blur(2px) contrast(120%); 
-}
-li {
-   list-style: none;
 }
 
 .container {
@@ -142,47 +137,6 @@ svg.btn-svg-icon.reset-svg .cls-2 {
 .start-btn .stop-svg { display: none; }
 .start-btn.is-running .start-svg { display: none; }
 .start-btn.is-running .stop-svg { display: block; }
-
-input[type='range'],
-input[type='range']::-webkit-slider-runnable-track,
-input[type='range']::-webkit-slider-thumb {
-   -webkit-appearance: none;
-}
-input[type='range'] {
-   width: 100px;
-   background-color: #F3BF3A;
-}
-input[type='range']:focus {
-   outline: none;
-}
-input[type='range']::-webkit-slider-thumb {
-  /* background-color: #00517B; */
-   background-color: #32AB8A;
-   width: 17px;
-   height: 17px;
-   border: 2px solid #F3BF3A;
-   border-radius: 50%;
-   margin-top: -7px;
-}
-input[type='range']::-moz-range-thumb {
-   /* background-color: #00517B; */
-   background-color: #32AB8A;
-   width: 15px;
-   height: 15px;
-   border: 2px solid #F3BF3A;
-   border-radius: 50%;
-}
-input[type='range']::-webkit-slider-runnable-track {
-   background-color:  #d7dcdf;
-   height: 4px;
-}
-input[type='range']:focus::-webkit-slider-runnable-track {
-   outline: none;
-}
-input[type='range']::-moz-range-track {
-   background-color:  #d7dcdf;
-   height: 4px;
-}
 
 .btn:disabled {
    background: gray;
