@@ -1,8 +1,8 @@
-import { CELL_SIZE, SPEED, COLOR } from './config.js'
-import { getMousePos, cssRunningGame, cssStoppedGame, listElement } from './utils.js'
+import { CELL_SIZE, SPEED, COLOR } from '../config.js'
+import { getMousePos, cssRunningGame, cssStoppedGame, listElement } from '../utils.js'
 import Grid from './grid.js'
-import CelullarAutomaton from './GameOfLife.js'
-import Pattern from './src/pattern.js'
+import CelullarAutomaton from './life.js'
+import Pattern from './pattern.js'
 
 export default class GameControl {
    constructor() {
@@ -256,6 +256,7 @@ export default class GameControl {
          clearInterval(this.timer)
          this.isRunning = false
          cssStoppedGame()
+         this.ca.generation = 0
          return
       }
       this.ca.generation++

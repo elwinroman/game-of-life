@@ -1,4 +1,4 @@
-import { CELL_SIZE, COLOR } from './config.js'
+import { CELL_SIZE, COLOR } from '../config.js'
 
 export default class Grid {
    constructor(containerCanvas) {

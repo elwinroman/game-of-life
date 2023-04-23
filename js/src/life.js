@@ -1,4 +1,4 @@
-import { COLUMN_MATRIX, ROW_MATRIX, ALIVE, DEAD} from './config.js'
+import { COLUMN_MATRIX, ROW_MATRIX, ALIVE, DEAD} from '../config.js'
 
 export default class CelullarAutomaton {
    constructor(gridCenter) {

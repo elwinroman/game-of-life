@@ -90,7 +90,7 @@ li {
    flex-wrap: wrap;
    gap: 15px;
 }
-.bottom-panel .btn-group .btn {
+.btn-group .btn {
    display: flex;
    align-items: center;
    width: 100%;
@@ -109,11 +109,11 @@ li {
    user-select: none;
    font-size: 14px;
 }
-.bottom-panel .btn-group .btn:hover {
+.btn-group .btn:hover {
    background: #3c4654;
    transition: background 200ms ease-in;
 }
-.bottom-panel .btn:hover svg {
+.btn:hover svg {
    transform: scale(1.2);
    transition: transform 200ms ease-in;
 }
@@ -182,4 +182,14 @@ input[type='range']:focus::-webkit-slider-runnable-track {
 input[type='range']::-moz-range-track {
    background-color:  #d7dcdf;
    height: 4px;
+}
+
+.btn:disabled {
+   background: gray;
+   pointer-events: none;
+}
+
+.pattern-select.btn:disabled {
+   background: gray;
+   pointer-events: none;
 }
