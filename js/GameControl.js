@@ -68,6 +68,7 @@ export default class GameControl {
          if (!startPos) return
 
          this.isDragging = true
+         this.grid.canvas.style.cursor = 'grab'
          const mousePos = getMousePos(e)
          const dx_t = mousePos.x - startPos.x
          const dy_t = mousePos.y - startPos.y
@@ -88,6 +89,7 @@ export default class GameControl {
          this._registerDragMovement(dx, dy)
          
          startPos = null
+         this.grid.canvas.style.cursor = 'default'
          this.grid.ctx.setTransform(1, 0, 0, 1, 0, 0)    // resetea la traslación
          this.grid.draw()
          this.grid.paintAllAliveCells(this.ca.gridAliveCells)
