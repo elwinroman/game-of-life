@@ -30,8 +30,8 @@ export default class GameControl {
 
          const mousePos = getMousePos(e);
          const cell = {     // posición de la celda clickeada
-            row: Math.floor(mousePos.y / this.grid.cellSize),
-            col: Math.floor(mousePos.x / this.grid.cellSize)
+            row: Math.floor((mousePos.y - this.grid.factor.y) / this.grid.cellSize),
+            col: Math.floor((mousePos.x - this.grid.factor.x) / this.grid.cellSize)
          }
 
          if (this.ca.isOutOfLimits(cell)) {
@@ -85,10 +85,9 @@ export default class GameControl {
       canvas.addEventListener('mouseleave', () => reset())
       
       const reset = () => {
-         startPos = null
+         this._registerDragMovement(dx, dy)
          
-         this.ca.dragDistance.row += (Math.floor(dy / this.grid.cellSize))
-         this.ca.dragDistance.col += (Math.floor(dx / this.grid.cellSize))
+         startPos = null
          this.grid.ctx.setTransform(1, 0, 0, 1, 0, 0)    // resetea la traslación
          this.grid.draw()
          this.grid.paintAllAliveCells(this.ca.gridAliveCells)
@@ -220,8 +219,8 @@ export default class GameControl {
       // mantiene el centro del grid cada vez que se hace un zoom en el grid o resize en el browser
       const oldGridCenter = {...this.grid.center}
       const newGridCenter = {
-         row: Math.ceil(Math.ceil(this.grid.canvas.height / this.grid.cellSize) / 2),
-         col: Math.ceil(Math.ceil(this.grid.canvas.width / this.grid.cellSize) / 2)
+         row: Math.ceil((this.grid.canvas.height / this.grid.cellSize) / 2),
+         col: Math.ceil((this.grid.canvas.width / this.grid.cellSize) / 2)
       }
       this.grid.center = {...newGridCenter}
       this.ca.dragDistance.row += newGridCenter.row - oldGridCenter.row
@@ -229,6 +228,34 @@ export default class GameControl {
 
       this.grid.draw()
       this.grid.paintAllAliveCells(this.ca.gridAliveCells)
+   }
+
+   // Registra y calcula los movimientos de la accion DRAG
+   _registerDragMovement(dx, dy) {
+      const mod = {                 // sobrante de la traslación
+         x: dx % this.grid.cellSize,
+         y: dy % this.grid.cellSize
+      }
+      const countFactor = {         // factor acumulativo temporal
+         x: this.grid.factor.x + mod.x,
+         y: this.grid.factor.y + mod.y
+      }
+      if (countFactor.x < this.grid.cellSize)
+         this.grid.factor.x = countFactor.x
+      else {
+         this.grid.factor.x = countFactor.x - this.grid.cellSize
+         this.ca.dragDistance.col += 1
+      }         
+      if (countFactor.y < this.grid.cellSize)
+         this.grid.factor.y = countFactor.y
+      else {
+         this.grid.factor.y = countFactor.y - this.grid.cellSize
+         this.ca.dragDistance.row += 1
+      }
+
+      // parseInt simula floor positivo y ceil negativo a la vez
+      this.ca.dragDistance.row += parseInt(dy / this.grid.cellSize)
+      this.ca.dragDistance.col += parseInt(dx / this.grid.cellSize)
    }
 
    _runGame = () => {

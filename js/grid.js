@@ -5,18 +5,19 @@ export default class Grid {
       this.canvas = document.getElementById('canvas')
       
       this.ctx = this.canvas.getContext('2d')
-      this.canvas.width  = containerCanvas.clientWidth - 1
-      this.canvas.height = containerCanvas.clientHeight - 1
+      this.canvas.width  = containerCanvas.clientWidth 
+      this.canvas.height = containerCanvas.clientHeight
       this.cellSize = CELL_SIZE
+      this.factor = { x: 2, y: 2 }      // factor de traslación en los bordes del grid
 
-      this.left = -Math.ceil(this.canvas.width / this.cellSize) * this.cellSize + 0.5
-      this.top = -Math.ceil(this.canvas.height / this.cellSize) * this.cellSize + 0.5
+      this.left = -Math.floor(this.canvas.width / this.cellSize) * this.cellSize + 0.5
+      this.top = -Math.floor(this.canvas.height / this.cellSize) * this.cellSize + 0.5
       this.right = this.ctx.canvas.width * 2
       this.bottom = this.ctx.canvas.width * 2
 
       this.center = {
-         row: Math.ceil(Math.ceil(this.canvas.height / this.cellSize) / 2),
-         col: Math.ceil(Math.ceil(this.canvas.width / this.cellSize) / 2)
+         row: Math.ceil((this.canvas.height / this.cellSize) / 2),
+         col: Math.ceil((this.canvas.width / this.cellSize) / 2)
       }
 
       this.border = 1
@@ -30,14 +31,14 @@ export default class Grid {
       
       // lineas verticales (columnas)
       for (let x=this.left; x<this.right; x+=this.cellSize) {
-         this.ctx.moveTo(x, this.top)
-         this.ctx.lineTo(x, this.bottom)
+         this.ctx.moveTo(x + this.factor.x, this.top)
+         this.ctx.lineTo(x + this.factor.x, this.bottom)
       }
       
       // lineas horizontales (filas)
       for (let y=this.top; y<this.bottom; y+=this.cellSize) {
-         this.ctx.moveTo(this.left, y)
-         this.ctx.lineTo(this.right, y)
+         this.ctx.moveTo(this.left, y + this.factor.y)
+         this.ctx.lineTo(this.right, y + this.factor.y)
       }
       this.ctx.strokeStyle = this.gridlineColor
       this.ctx.lineWidth = 0.5
@@ -51,8 +52,10 @@ export default class Grid {
 
    _fillSquare(pos) {
       this.ctx.fillRect(
-         pos.col * this.cellSize + this.border, pos.row * this.cellSize + this.border,
-         this.cellSize - this.border, this.cellSize - this.border
+         pos.col * this.cellSize + this.factor.x + this.border, 
+         pos.row * this.cellSize + this.factor.y + this.border,
+         this.cellSize - this.border, 
+         this.cellSize - this.border
       )
    }
 
@@ -68,10 +71,10 @@ export default class Grid {
    }
 
    recalculate(containerCanvas) {
-      this.canvas.width = containerCanvas.clientWidth - 1
-      this.canvas.height = containerCanvas.clientHeight - 1
-      this.left = -Math.ceil(this.canvas.width / this.cellSize) * this.cellSize + 0.5
-      this.top = -Math.ceil(this.canvas.height / this.cellSize) * this.cellSize + 0.5
+      this.canvas.width = containerCanvas.clientWidth
+      this.canvas.height = containerCanvas.clientHeight
+      this.left = -Math.floor(this.canvas.width / this.cellSize) * this.cellSize + 0.5
+      this.top = -Math.floor(this.canvas.height / this.cellSize) * this.cellSize + 0.5
       this.right = this.canvas.width * 2
       this.bottom = this.canvas.height * 2
    }
