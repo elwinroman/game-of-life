@@ -135,11 +135,10 @@ export default class GameControl {
    }
 
    speedControl() {
-      const speedRange = document.getElementById('speed-range')
-      speedRange.value = -SPEED
+      listElement.speedRange.value = -SPEED
 
-      speedRange.addEventListener('change', () => {
-         this.speed = -parseInt(speedRange.value)
+      listElement.speedRange.addEventListener('change', () => {
+         this.speed = -parseInt(listElement.speedRange.value)
 
          if (this.isRunning) {
             clearInterval(this.timer)
@@ -256,7 +255,6 @@ export default class GameControl {
          alert('no hay vida')
          clearInterval(this.timer)
          this.isRunning = false
-         this.startBtn.querySelector('span').textContent = 'Start'
          cssStoppedGame()
          return
       }
