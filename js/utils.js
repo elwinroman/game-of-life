@@ -28,6 +28,7 @@ export function cssStoppedGame() {
 }
 
 export const listElement = {
+   // life HTML Elements
    toggleGridlineIcon: document.querySelector('svg.toggle-gridline'),
    containerCanvas: document.querySelector('.canvas-container'),
    patternSelect: document.querySelector('.pattern-select'),
@@ -35,5 +36,10 @@ export const listElement = {
    zoomRange: document.getElementById('zoom-range'),
    resetBtn: document.querySelector('button.reset-btn'),
    startBtn: document.querySelector('button.start-btn'),
-   nextBtn: document.querySelector('button.next-btn')
+   nextBtn: document.querySelector('button.next-btn'),
+   // header HTML Elements
+   logoContainer: document.querySelector('.navbar .logo'),
+   aspectContainer: document.querySelector('.navbar .aspect'),
+   githubContainer: document.querySelector('.navbar .github'),
+   navbar: document.querySelector('.navbar')
 }

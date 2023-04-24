@@ -1,11 +1,21 @@
 :root {
-   --light-back: #FFF;
-   --dark-back: #222;
+   --lm-header-background: #20252C;
+   --lm-header-color: #222;
+   --header-height: 85px;
+   --header-height-sticky: 65px;
 }
 * {
    margin: 0; padding: 0;
 	box-sizing: border-box;
    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto;
 }
+html {
+   scroll-behavior: smooth;
+   scroll-padding: 80px;
+}
 li { list-style: none; }
 canvas { user-select: none; }
+a {
+   color: inherit; 
+   text-decoration: none; 
+}

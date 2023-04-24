@@ -1,19 +1,89 @@
 @import url('global.css');
 @import url('range.css');
 
-body {
-   background: url('/assets/img/grid.png');
-   background-repeat: repeat;
-   backdrop-filter: blur(2px) contrast(120%); 
+/* Navbar */
+.navbar {
+   position: fixed;
+   top: 0;
+   width: 100%;
+   height: var(--header-height);
+   background: #E9E4F0;
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   box-shadow: 1px 1px 2px 0px rgba(0, 0, 0, 0.2);
+   padding: 1rem;
+   transition: all 200ms linear;
+   user-select: none;
 }
-
+.navbar.sticky {
+   opacity: 0.9;
+   height: var(--header-height-sticky);
+   box-shadow: 5px 5px 15px 0px rgba(0, 0, 0, 0.4);
+}
+.navbar .logo {
+   display: flex;
+   align-items: center;
+   gap: 5px;
+   font-weight: bold;
+   color: #3C3C43;
+}
+.navbar .logo-title {
+   color: #285092;
+}
+.navbar .logo svg {
+   animation: rotateLogo 1s infinite;
+}
+@keyframes rotateLogo {
+   from { transform: rotate(0deg); }
+   to { transform: rotate(90deg); }
+}
+.navbar .links {
+   display: flex;
+   justify-content: space-between;
+   color: #3C3C43;
+   gap: 1rem;
+   font-size: 1.15rem;
+   font-weight: bold;
+   cursor: pointer;
+}
+.navbar .links li {
+   display: flex;
+   border-radius: 6px;
+   padding: 8px 14px;
+}
+.navbar .links li:hover {
+   background: #D4D0DA;
+   transition: all 200ms linear;
+}
+.navbar .tools {
+   display: flex;
+   align-items: center;
+}
+.navbar .aspect,
+.navbar .github {
+   display: flex;
+   border-radius: 100%;
+   padding: 10px;
+   cursor: pointer;
+   object-fit: contain;
+}
+.navbar .aspect:hover,
+.navbar .github:hover {
+   background: #D4D0DA;
+   transition: all 200ms linear;
+}
+.navbar .aspect.rotate {
+   transform: rotate(180deg);
+}
+/**/
 .container {
    background: #fff;
    overflow-y: auto;
    width: 80%;
    min-width: 400px;
    height: 100%;
-   margin: 0 auto;
+   margin: var(--header-height) auto 0 auto;
    display: flex;
    flex-direction: column;
    align-items: center;
@@ -21,27 +91,6 @@ body {
    padding: 40px 80px;
    color: #3c3c43eb;
 }
-
-.header {
-   width: 100%;
-   background: #20252C;
-   padding: 25px 0;
-}
-.header .title {
-   width: 100%;
-   color: #fafafa;
-   font-size: 2.5rem;
-   font-weight: bold;
-   text-align: center;
-}
-.header .subtitle {
-   display: block;
-   width: 100%;
-   text-align: center;
-   font-weight: bold;
-   color: #F3BF3A;
-}
-
 .game {
    width: 100%;
    display: flex;
