@@ -1,24 +1,26 @@
 @import url('global.css');
 @import url('range.css');
+@import url('select.css');
 
 /* Navbar */
 .navbar {
+   z-index: 100;
    position: fixed;
    top: 0;
    width: 100%;
    height: var(--header-height);
-   background: #E9E4F0;
+   background: var(--lm-color-bg-page);
    display: flex;
    justify-content: space-between;
    align-items: center;
-   box-shadow: 1px 1px 2px 0px rgba(0, 0, 0, 0.2);
-   padding: 1rem;
+   padding: 0 50px;
    transition: all 200ms linear;
    user-select: none;
 }
 .navbar.sticky {
-   opacity: 0.9;
    height: var(--header-height-sticky);
+   background-color: rgb(233 228 240 / 0.7);
+   backdrop-filter: blur(5px) saturate(4.5);
    box-shadow: 5px 5px 15px 0px rgba(0, 0, 0, 0.4);
 }
 .navbar .logo {
@@ -26,14 +28,14 @@
    align-items: center;
    gap: 5px;
    font-weight: bold;
-   color: #3C3C43;
 }
-.navbar .logo-title {
-   color: #285092;
-}
+.navbar .logo > svg { color: var(--dm-color-bg-page); }
+.navbar .logo-title { color: var(--dm-color-bg-page); }
+/*
 .navbar .logo svg {
    animation: rotateLogo 1s infinite;
 }
+*/
 @keyframes rotateLogo {
    from { transform: rotate(0deg); }
    to { transform: rotate(90deg); }
@@ -41,20 +43,16 @@
 .navbar .links {
    display: flex;
    justify-content: space-between;
-   color: #3C3C43;
+   color: var(--lm-text-color);
    gap: 1rem;
-   font-size: 1.15rem;
-   font-weight: bold;
+   font-size: 1rem;
    cursor: pointer;
 }
 .navbar .links li {
    display: flex;
-   border-radius: 6px;
+   border-radius: 4px;
    padding: 8px 14px;
-}
-.navbar .links li:hover {
-   background: #D4D0DA;
-   transition: all 200ms linear;
+   border: 1px solid transparent;
 }
 .navbar .tools {
    display: flex;
@@ -86,21 +84,46 @@
 .navbar .aspect.rotate {
    transform: rotate(0deg);
 }
-/**/
+
+/* Container */
 .container {
-   background: #fff;
-   overflow-y: auto;
-   width: 80%;
-   min-width: 400px;
-   height: 100%;
-   margin: var(--header-height) auto 0 auto;
+   background-color: var(--lm-color-bg-page);
    display: flex;
    flex-direction: column;
    align-items: center;
-   gap: 40px;
-   padding: 40px 80px;
-   color: #3c3c43eb;
+   gap: 50px;
+   padding: 50px 0;
 }
+/** Titulo principal */
+.main-title {
+   width: 80%;
+   height: 350px;
+   background: url('../assets/img/astronaut-min.png'), 
+               linear-gradient(50deg, #158B82 0%, #8151b0 74%);
+   background-size: contain;
+   background-repeat: no-repeat;
+   background-position: right;
+   margin-top: calc(var(--header-height) + 50px);
+   padding: 20px 50px;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   border-radius: 4px;
+}
+.main-title h1.m-title {
+   backdrop-filter: blur(2px);
+   width: fit-content;
+   padding: 5px 0;
+   font-size: 2rem;
+   color: var(--lm-color-bg-page);
+}
+.main-title span.m-subtitle {
+   padding: 5px 0;
+   font-size: 1rem;
+   font-weight: bold;
+   color: var(--lm-text-color);
+}
+/** Sección del juego (canvas y controles) */
 .game {
    width: 80%;
    background-color: var(--lm-card-color);
@@ -177,26 +200,52 @@
 .game .group-range { gap: 20px; }
 .game .control.type-range { gap: 1px; }
 .game .control.type-range input { height: 20px; }
-}
-svg.btn-svg-icon.reset-svg .cls-1,
-svg.btn-svg-icon.reset-svg .cls-2 {
-   stroke: #fff;
-}
-.svg-icon.toggle-gridlines path {
-   fill: #00517B;
-}
-/* start and stop svg's */
-.start-btn .start-svg { display: block; }
-.start-btn .stop-svg { display: none; }
-.start-btn.is-running .start-svg { display: none; }
-.start-btn.is-running .stop-svg { display: block; }
 
-.btn:disabled {
-   background: gray;
-   pointer-events: none;
+/* Info */
+#info {
+   width: 80%;
+   align-self: flex-start;
+   padding-left: 10%;
+   display: flex;
+   flex-flow: column wrap;
+   gap: 60px;
+   color: var(--lm-text-color);
+   line-height: 1.5;
+   font-size: .98rem;
+}
+.info-text-body {
+   margin: 20px 0;
+}
+.rules {
+   display: grid;
+   grid-template-columns: repeat(auto-fit, 300px);
+   gap: 20px;
+}
+.rules .rule {
+   background-color: var(--lm-card-color);
+   display: flex;
+   flex-flow: column nowrap;
+   box-shadow: var(--lm-shadow);
+   border-radius: 4px;
+}
+.rule .rule-top {
+   height: 200px;
+   background-image: url('../assets/img/particle-min.jpg');
+   background-size: cover;
+}
+.rule .rule-content {
+   flex-grow: 1;
+   padding: 20px;
+   border: 1px solid var(--lm-border-color);
+   border-radius: 0 0 4px 4px;
+   font-size: 0.92rem;
 }
 
-.pattern-select.btn:disabled {
-   background: gray;
-   pointer-events: none;
+/* Footer */
+.footer {
+   height: 150px;
+   background-color: var(--dm-color-bg-page);
+   display: grid;
+   place-content: center;
+   color: var(--dm-text-color);
 }

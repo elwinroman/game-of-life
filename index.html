@@ -6,18 +6,16 @@
 	<title>Juego de la vida</title>
 
 	<link rel="stylesheet" href="css/styles.css">
-	
 	<script src="js/main.js" type="module" crossorigin></script>
 </head>
 <body>
-   
    <header class="navbar">
       <div class="logo">
          <!-- Load logo-svg -->
          <h2 class="logo-title">LIFE GAME</h2>
       </div>
       <ul class="links">
-         <a href="#canvas"><li>Jugar</li></a>
+         <a href="#play"><li>Jugar</li></a>
          <a href="#info"><li>Info</li></a>
          <a><li>Patrones</li></a>
       </ul>
@@ -94,28 +92,76 @@
             </ul>
          </div>
       </section>
+      <section id="info">
+         <div class="">
+            <h2 class="info-title">¿Qué es el juego de la vida?</h2>
+            <p class="info-text-body">
+               El Juego de la Vida es un autómata celular creado por el matemático británico John Horton Conway en 1970. El autómata consta de una cuadrícula bidimensional de células que pueden estar vivas o muertas. A partir de un conjunto inicial de células vivas, las células evolucionan de acuerdo con un conjunto de reglas simples.
+            </p>
+         </div>
+         <div>
+            <h2 class="info-title">Reglas del juego</h2>
+            <p class="info-text-body">Las reglas del juego son las siguientes:</p>
+            <ul class="rules">
+               <li class="rule">
+                  <div class="rule-top">
+                     1
+                  </div>
+                  <p class="rule-content">
+                     Una célula muerta con exactamente tres células vecinas vivas "nace" (se convierte en una célula viva).
+                  </p>
+               </li>
+               <li class="rule">
+                  <div class="rule-top">
+                     2
+                  </div>
+                  <p class="rule-content">
+                     Una célula viva con dos o tres células vecinas vivas sobrevive a la siguiente generación.
+                  </p>
+               </li>
+               <li class="rule">
+                  <div class="rule-top">
+                     3
+                  </div>
+                  <p class="rule-content">
+                     Una célula viva con menos de dos células vecinas vivas muere de soledad.
+                  </p>
+               </li>
+               <li class="rule">
+                  <div class="rule-top">
+                     4
+                  </div>
+                  <p class="rule-content">
+                     Una célula viva con más de tres células vecinas vivas muere de sobrepoblación.
+                  </p>
                </li>
             </ul>
-         </section>
-      </main>
+            <p class="info-text-body">
+               Cada célula interactúa con sus ocho vecinas adyacentes en la cuadrícula. El estado de todas las células se actualiza simultáneamente en cada iteración, lo que permite que patrones interesantes y complejos emerjan en la cuadrícula. Aunque el Juego de la Vida no tiene una aplicación práctica específica, es un ejemplo de cómo reglas simples pueden dar lugar a comportamientos complejos y a menudo impredecibles. Es un tema popular en la investigación matemática y de la complejidad, y también es utilizado como una herramienta educativa para enseñar principios de la teoría de sistemas complejos.
+            </p>
 
-      <section class="info">
-         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus itaque nesciunt velit vel reprehenderit dolorem facere asperiores repellat culpa suscipit, voluptates, soluta architecto cumque delectus natus aliquid obcaecati laborum. Odio?
-         Expedita ex nesciunt adipisci, enim nostrum exercitationem nemo. Maxime dolorum architecto assumenda esse, et excepturi. Neque soluta possimus facilis sit magnam esse perferendis ad est id deleniti. Minus, enim quidem!
-         Eveniet rerum in expedita! Eligendi blanditiis aut nemo tempore laborum perspiciatis, hic quod, sint officiis id nihil non ab accusantium labore mollitia earum in veritatis esse tenetur, illo nobis quos.
-         Nesciunt accusantium dolores blanditiis molestias beatae cupiditate neque facere. Sequi eligendi ad distinctio necessitatibus eos aperiam fugit delectus enim itaque rerum neque quae accusantium id magnam veritatis praesentium, a laborum.
-         Quod ex similique aut iusto perferendis. Facilis ratione aspernatur iusto laudantium qui tempora sint, beatae eveniet reprehenderit. Dicta neque eos dolorem, natus corporis sint in nisi quis voluptatem cupiditate optio!</p>
+         </div>
+
+         <div>
+            <h2 class="info-title">Patrones</h2>
+            <p class="info-text-body">
+               En el Juego de la Vida, un patrón es una configuración de células vivas y muertas que se repite a lo largo del tiempo o se mueve a través de la cuadrícula. Los patrones pueden ser simples o muy complejos, y pueden tener propiedades interesantes como la capacidad de desplazarse, generar copias de sí mismos o interactuar con otros patrones.
+
+               Algunos de los patrones más conocidos en el Juego de la Vida incluyen:
+               <!-- ---- -->
+            </p>
+            <p class="info-text-body">
+               Los patrones en el Juego de la Vida son objeto de estudio y exploración en la investigación matemática y de la complejidad. También son una fuente de interés y diversión para aficionados y entusiastas del juego. Muchos patrones se han descubierto y documentado a lo largo de los años, y algunos se han utilizado para construir máquinas complejas o para simular procesos naturales en la cuadrícula.
+               Para más información, visite: <a href="https://conwaylife.com/wiki/Main_Page">Conway wiki</a>
+            </p>
+         </div>
       </section>
+   </main>
 
-      <footer>
-         <span>
-            The website was established and is currently managed by Elwin Roman
-         </span>
-         <br>
-         <span>
-            🤞 elwinromanv@gmail.com
-         </span>
-      </footer>
-	</section>
+   <footer class="footer">
+      <div>
+         <p>The website was established and is currently managed by Niwle Namor</p>
+      </div>
+   </footer>
 </body>
 </html>
