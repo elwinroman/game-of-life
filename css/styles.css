@@ -249,3 +249,38 @@
    place-content: center;
    color: var(--dm-text-color);
 }
+
+/* DARK MODE */
+.dark-mode .navbar { background-color: var(--dm-color-bg-page); }
+.dark-mode .navbar.sticky { background-color: rgb(44 49 62 / 70%); }
+.dark-mode .navbar .logo > svg { color: var(--lm-color-bg-page); }
+.dark-mode .navbar .logo-title { color: var(--lm-color-bg-page); }
+.dark-mode .navbar .links { color: var(--dm-text-color); }
+.dark-mode .navbar .links a:hover { text-decoration: underline var(--dm-text-color); } 
+.dark-mode .navbar .github > svg { fill: var(--lm-color-bg-page); }
+.dark-mode .navbar .aspect > svg { color: var(--lm-color-bg-page); }
+.dark-mode .navbar .aspect:hover,
+.dark-mode .navbar .github:hover { background-color: var(--dm-border-color); }
+.dark-mode .container { background-color: var(--dm-color-bg-page); }
+.dark-mode .game {
+   background-color: var(--dm-card-color);
+   border: 1px solid var(--dm-border-color);
+   box-shadow: var(--dm-shadow);
+}
+.dark-mode .game .panel.top-panel { color: var(--dm-text-color) }
+.dark-mode .canvas-container { 
+   background-color: var(--dm-color-bg-page); 
+   border: 1px solid #666862;
+}
+.dark-mode .rules .rule {
+   background-color: var(--dm-border-color);
+   box-shadow: var(--dm-shadow);
+}
+.dark-mode .game .btn-control.toggle-gridline { color: var(--dm-text-color); }
+.dark-mode .game .btn-control.toggle-gridline > svg { fill: var(--dm-card-color); }
+.dark-mode #info { color: var(--dm-text-color); }
+.dark-mode .rule .rule-content {
+   background-color: var(--dm-card-color);
+   border: 1px solid var(--dm-border-color);
+}
+.dark-mode .footer { background-color: #171c28; }
