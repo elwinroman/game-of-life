@@ -101,7 +101,7 @@ export default class GameControl {
    zoomControl() {
       listElement.zoomRange.value = CELL_SIZE
 
-      listElement.zoomRange.addEventListener('change', () => {
+      listElement.zoomRange.addEventListener('input', () => {
          this.grid.cellSize = parseInt(listElement.zoomRange.value)
          this._reconfigure()
       })
