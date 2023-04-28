@@ -1,8 +1,23 @@
 :root {
-   --lm-header-background: #20252C;
-   --lm-header-color: #222;
    --header-height: 85px;
-   --header-height-sticky: 65px;
+   --header-height-sticky: 55px;
+   --lm-shadow: 0.3px 0.4px 0.6px hsl(270deg 7% 62% / 0.36),
+   0.8px 1.2px 1.6px -0.8px hsl(270deg 7% 62% / 0.36),
+   2.1px 3.1px 4.2px -1.7px hsl(270deg 7% 62% / 0.36),
+   5.1px 7.5px 10.2px -2.5px hsl(270deg 7% 62% / 0.36);
+   --lm-color-bg-page: #FBFAFC;           /* snow */
+   --lm-text-color: #3C3C43;
+   --lm-border-color: #D6DAD0;               /* timberwolf */
+   --lm-card-color: #F2EFF6;
+   --disabled-color: #98A6AD;
+   --dm-color-bg-page: #2C313E;    /* outer-space (crayola) */
+   --dm-text-color: #C4D3E3;
+   --dm-border-color: #434958;
+   --dm-card-color: #343B4A;
+   --dm-shadow: 0.3px 0.4px 0.6px hsl(224deg 24% 9% / 0.36),
+   0.8px 1.2px 1.6px -0.8px hsl(224deg 24% 9% / 0.36),
+   2.1px 3.1px 4.2px -1.7px hsl(224deg 24% 9% / 0.36),
+   5.1px 7.5px 10.2px -2.5px hsl(224deg 24% 9% / 0.36);
 }
 * {
    margin: 0; padding: 0;
@@ -11,11 +26,14 @@
 }
 html {
    scroll-behavior: smooth;
-   scroll-padding: 80px;
+   scroll-padding: calc(var(--header-height-sticky) + 10px);
 }
 li { list-style: none; }
 canvas { user-select: none; }
 a {
    color: inherit; 
    text-decoration: none; 
+}
+button {
+   border: transparent;
 }

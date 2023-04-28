@@ -1,0 +1,38 @@
+select {
+   width: 160px;
+   background-color: var(--lm-color-bg-page);
+   border-radius: 4px;
+   border: 1px solid #B9BEC4;
+   outline: none;
+   padding: 3px 2px;
+   font-size: 0.88rem;
+   color: var(--lm-text-color);
+}
+select:disabled {
+   background-color: var(--lm-color-bg-page);
+   color: var(--disabled-color);
+}
+select:hover,
+select:focus {
+   border: 1px solid #80837D;
+}
+select option {
+   background-color: var(--lm-color-bg-page);
+   padding: 20px;
+   border: 1px solid red;
+   color: var(--lm-text-color);
+   font-size: 0.88rem;
+}
+.dark-mode select {
+   background-color: var(--dm-color-bg-page);
+   border: 1px solid #5E6266;
+   color: var(--dm-text-color);
+}
+.dark-mode select:hover,
+.dark-mode select:focus {
+   border: 1px solid #91948D;
+}
+.dark-mode select option {
+   background-color: var(--dm-color-bg-page);
+   color: var(--dm-text-color);
+}

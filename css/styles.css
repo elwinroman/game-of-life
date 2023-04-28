@@ -68,13 +68,23 @@
    cursor: pointer;
    object-fit: contain;
 }
-.navbar .aspect:hover,
-.navbar .github:hover {
-   background: #D4D0DA;
+.navbar .github > svg { fill: var(--dm-color-bg-page); }
+.navbar .aspect > svg { color: var(--dm-color-bg-page); }
+/* - - - */
+.navbar .links a:hover {
+   text-decoration: underline var(--lm-text-color);
    transition: all 200ms linear;
 }
+.navbar .aspect:hover,
+.navbar .github:hover {
+   background-color: var(--lm-border-color);
+   transition: all 200ms linear;
+}
+.navbar .aspect {
+   transform: rotate(90deg);
+}
 .navbar .aspect.rotate {
-   transform: rotate(180deg);
+   transform: rotate(0deg);
 }
 /**/
 .container {
@@ -92,87 +102,81 @@
    color: #3c3c43eb;
 }
 .game {
-   width: 100%;
+   width: 80%;
+   background-color: var(--lm-card-color);
    display: flex;
    flex-direction: column;
-   /* gap: 3px; */
+   gap: 5px;
+   border: 1px solid var(--lm-border-color);
+   box-shadow: var(--lm-shadow);
+   padding: 20px 20px;
+   border-radius: 6px;
 }
-
-.panel {
-   background: #F3BF3A;
+.game .game-icon {
+   text-align: center;
+}
+.game .panel {
    display: flex;
    flex-wrap: wrap;
    justify-content: space-between;
    align-items: center;
-   padding: 8px 10px;
+   border-radius: 4px;
 }
-.top-panel {
-   
+.game .panel.top-panel {
+   color: var(--lm-text-color)
 }
-.top-panel .pattern-select.btn {
-   padding: 2px 5px;
-}
-
-.canvas-container {
+.game .canvas-container {
    overflow: hidden;
+   background-color: var(--lm-color-bg-page);
    width: 100%;
-   height: 350px;
-   border: 1px solid #b1b1b3eb;
+   height: 430px;
+   border: 1px solid #c5c4c7;
+   border-radius: 4px;
 }
-
-.bottom-panel {
-   border-radius: 0 0 5px 5px;
+.game .panel.bottom-panel {
+   height: 65px;
+   background-color: var(--dm-color-bg-page);
 }
-.bottom-panel .zoom-control,
-.bottom-panel .speed-control {
-   display: flex;
-   gap: 5px;
-}
-.bottom-panel .btn-group,
-.bottom-panel .range-group {
-   display: flex;
-   flex-wrap: wrap;
-   gap: 15px;
-}
-.btn-group .btn {
+.game .control-group {
    display: flex;
    align-items: center;
-   width: 100%;
-   padding: 0 15px;
-   background-color: #20252C;
-   border: transparent;
-   color: #fff;
+   margin: 0 15px;
+   border-radius: 50px;
 }
-
-.btn {
-   gap: 5px;
-   line-height: 30px;
+.game .control {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+}
+.game .control .label {
+   font-size: 0.7rem;
+   color: var(--disabled-color);
+}
+.game .btn-control {
+   display: grid;
+   place-content: center;
    cursor: pointer;
-   border-radius: 4px;
+   border-radius: 50%;
    outline: none;
-   user-select: none;
-   font-size: 14px;
 }
-.btn-group .btn:hover {
-   background: #3c4654;
-   transition: background 200ms ease-in;
+.game .btn-control:hover {
+   transform: translateY(-1px);
+   transition: all 200ms ease-in;
 }
-.btn:hover svg {
-   transform: scale(1.2);
-   transition: transform 200ms ease-in;
+/* - - - - - */
+.game .control.type-player { width: 40px; }
+.game .control.type-player .btn-control {
+   background-color: var(--dm-color-bg-page);
+   color: var(--lm-color-bg-page);
 }
-
-.svg-icon {
-   width: 25px;
-   height: 25px;
-   cursor: pointer;
+.game .control.type-player .btn-control:disabled {
+   color: var(--disabled-color);
+   pointer-events: none;
 }
-.btn-svg-icon {
-   width: 16px;
-   height: 16px;
-}
-.btn-svg-icon:not(.reset-svg) path {
-   fill: #fff;
+.game .btn-control.toggle-gridline { color: var(--lm-text-color); }
+.game .group-range { gap: 20px; }
+.game .control.type-range { gap: 1px; }
+.game .control.type-range input { height: 20px; }
 }
 svg.btn-svg-icon.reset-svg .cls-1,
 svg.btn-svg-icon.reset-svg .cls-2 {

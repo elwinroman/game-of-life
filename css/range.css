@@ -1,8 +1,8 @@
 input {
-   --circle-border-color: #F3BF3A;
+   --circle-border-color: var(--dm-color-bg-page);
    --circle-color: #32AB8A;
-   --track-color: #D7DCDF;
-   --thumb-color: #F3BF3A;       /* background del track */
+   --track-color: var(--lm-color-bg-page);
+   --thumb-color: var(--dm-color-bg-page);       /* background del track */
 }
 input[type='range'],
 input[type='range']::-webkit-slider-runnable-track,

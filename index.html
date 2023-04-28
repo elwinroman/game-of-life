@@ -27,17 +27,12 @@
       </div>
    </header>
 
-	<section class="container">
+   <main class="container"> 
+      <section class="main-title">
+         <h1 class="m-title">Juego de la Vida de Conway</h1>
+         <span class="m-subtitle">Autómata Celular</span>
+      </section>
 
-      <div class="info">
-         <p>El juego de la vida" es un autómata celular diseñado por el matematico
-            británico John Horton Conway en 1970. Se trata de un modelo matemático
-            que consiste en un cuadrícula bidimensional de células que pueden estar
-            vivas o muertas
-         </p>
-      </div>
-      <main class="game">
-         <section class="panel top-panel">
       <section class="game">
          <div class="game-icon">
             <img src="assets/icons/game-mario.svg" alt="mario-icon">
@@ -45,10 +40,9 @@
          <div id="play" class="panel top-panel">
             <div>
                <span>Escoge tu patron</span>
-               <select class="pattern-select btn" placeholder="texto">
-                  <option value="0" selected>None</option>
+               <select class="pattern-select" placeholder="texto">
                   <option value="glider">Glider</option>
-                  <option value="104p177">104p177</option>
+                  <option value="104p177" selected>104p177</option>
                   <option value="ak94">AK94</option>
                   <option value="gosperglidergun">Gosper Glider Gun</option>
                   <option value="tannersp46">Tanner's p46</option>
