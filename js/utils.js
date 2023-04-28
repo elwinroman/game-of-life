@@ -1,3 +1,5 @@
+import { playSvg, pauseSvg } from "./layout/svg.js"
+
 export function getMousePos(e) {
    var rect = canvas.getBoundingClientRect();
 
@@ -9,8 +11,9 @@ export function getMousePos(e) {
 
 // Cuando el juego está 'corriendo'
 export function cssRunningGame() {
+   pauseSvg()
    listElement.startBtn.classList.add('is-running')
-   listElement.startBtn.querySelector('span').textContent = 'Stop'
+   listElement.startBtn.nextElementSibling.textContent = 'Pausa'
    
    listElement.nextBtn.disabled = true
    listElement.resetBtn.disabled = true
@@ -19,8 +22,9 @@ export function cssRunningGame() {
 
 // Cuando el juego se ha detenido
 export function cssStoppedGame() {
+   playSvg()
    listElement.startBtn.classList.remove('is-running')
-   listElement.startBtn.querySelector('span').textContent = 'Start'
+   listElement.startBtn.nextElementSibling.textContent = 'Play'
 
    listElement.nextBtn.disabled = false
    listElement.resetBtn.disabled = false
@@ -29,7 +33,7 @@ export function cssStoppedGame() {
 
 export const listElement = {
    // life HTML Elements
-   toggleGridlineIcon: document.querySelector('svg.toggle-gridline'),
+   toggleGridlineBtn: document.querySelector('button.toggle-gridline'),
    containerCanvas: document.querySelector('.canvas-container'),
    patternSelect: document.querySelector('.pattern-select'),
    speedRange: document.getElementById('speed-range'),

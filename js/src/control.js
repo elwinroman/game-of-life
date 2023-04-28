@@ -116,6 +116,8 @@ export default class GameControl {
    }
 
    startControl() {
+      cssStoppedGame()     // render the svg icon
+
       listElement.startBtn.addEventListener('click', () => {
          if (this.ca.aliveCells.length === 0) {
             alert('no hay vida')
@@ -189,7 +191,7 @@ export default class GameControl {
 
    // Oculta o muestra las lineas de la cuadrícula
    gridlineControl() {
-      listElement.toggleGridlineIcon.addEventListener('click', () => {
+      listElement.toggleGridlineBtn.addEventListener('click', () => {
          this.hasGridline = !this.hasGridline
          
          if (this.hasGridline) {

@@ -23,7 +23,7 @@ const openGithubPage = (() => {
    })
 })
 
-const toggleAspectMode = (async() => {
+const toggleAspectMode = (() => {
    lightModeSvg()
 
    el.aspectContainer.addEventListener('click', () => {
