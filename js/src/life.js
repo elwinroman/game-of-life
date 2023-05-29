@@ -83,28 +83,68 @@ export default class CelullarAutomaton {
       let nextAliveCells = []
       let nextBoard = [...this.board]
       
-      // analiza cada célula de la matriz
-      for (let i=1; i<this.row-1; i++) {
-         for (let j=1; j<this.col-1; j++) {
-            const currentCell = this.board[i * this.col + j]
-            const neighbors = this._calculateNeighborsAlive(i, j)
-            
-            // reglas
-            if (currentCell === ALIVE && neighbors < 2)
-               nextBoard[i * this.col + j] = DEAD  // muere por despoblación
-            else if (currentCell === ALIVE && neighbors > 3)
-               nextBoard[i * this.col + j] = DEAD     // muere por sobrepoblacion
-            else if (currentCell === DEAD && neighbors === 3) {
-               nextBoard[i * this.col + j] = ALIVE    // nace una nueva célula
-               nextAliveCells.push({ row: i, col: j })
-            }
-            else {
-               nextBoard[i * this.col + j] = currentCell    // no existen cambios
-               if (currentCell === ALIVE)
-                  nextAliveCells.push({ row: i, col: j })
+      // en vez de recorrer toda la matriz, solo analiza por puntos focalizados 
+      // ...tomando como referencia las células vivas
+      for (let it = 0; it < this.aliveCells.length; it++) {
+         const i = this.aliveCells[it].row, j = this.aliveCells[it].col
+         
+         const neighbors = this._calculateNeighborsAlive(i, j)
+
+         // la célula muere por despoblación o sobrepoblación
+         if (neighbors < 2 || neighbors > 3)
+            nextBoard[i * this.col + j] = DEAD
+         else {   // no hay cambios
+            nextBoard[i * this.col + j] = ALIVE
+            nextAliveCells.push({row: i, col: j})
+         }
+
+         const deadCellsAround = []
+         // analiza solo las células muertas vecinas, la segunda comparación del condicional evitar revivir a una célula viva que ha muerto
+         if (
+               this.board[(i-1) * this.col + j-1] === DEAD && 
+               nextBoard[(i-1) * this.col + j-1] === DEAD
+            )  deadCellsAround.push({row: i-1, col: j-1})
+         if (
+               this.board[(i-1) * this.col + j] === DEAD && 
+               nextBoard[(i-1) * this.col + j] === DEAD
+            )  deadCellsAround.push({row: i-1, col: j})
+         if (
+               this.board[(i-1) * this.col + j+1] === DEAD && 
+               nextBoard[(i-1) * this.col + j+1] === DEAD
+            )  deadCellsAround.push({row: i-1, col: j+1})
+         if (
+               this.board[i * this.col + j-1] === DEAD && 
+               nextBoard[i][j-1] === DEAD
+            )  deadCellsAround.push({row: i, col: j-1})
+         if (
+               this.board[i * this.col + j+1] === DEAD && 
+               nextBoard[i * this.col + j+1] === DEAD
+            )  deadCellsAround.push({row: i, col: j+1})
+         if (
+               this.board[(i+1) * this.col + j-1] === DEAD && 
+               nextBoard[(i+1) * this.col + j-1] === DEAD
+            )  deadCellsAround.push({row: i+1, col: j-1})
+         if (
+               this.board[(i+1) * this.col + j] === DEAD && 
+               nextBoard[(i+1) * this.col + j] === DEAD
+            )  deadCellsAround.push({row: i+1, col: j})
+         if (
+               this.board[(i+1) * this.col + j+1] === DEAD && 
+               nextBoard[(i+1) * this.col + j+1] === DEAD
+            )  deadCellsAround.push({row: i+1, col: j+1})
+
+         for (let it2 = 0; it2 < deadCellsAround.length; it2++) {
+            const i2 = deadCellsAround[it2].row, j2 = deadCellsAround[it2].col
+            const neighbors2 = this._calculateNeighborsAlive(i2, j2)
+
+            // nace una nueva célula
+            if (neighbors2 === 3) {
+               nextBoard[i2 * this.col + j2] = ALIVE
+               nextAliveCells.push({row: i2, col: j2})
             }
          }
       }
+
       // actualiza los datos de la nueva generación
       this.aliveCells = [...nextAliveCells]
       this.board = [...nextBoard]
