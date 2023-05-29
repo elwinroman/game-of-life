@@ -7,9 +7,9 @@ export default class CelullarAutomaton {
       // almacena la distancia recorrida del mouse al arrastrar el grid
       this.dragDistance = { row: 0, col: 0 }
       
-      this.row = ROW_MATRIX
-      this.col = COLUMN_MATRIX
-      this.board = Array(this.row).fill().map(() => Array(this.col).fill(DEAD))
+      this.row = COLUMN_MATRIX
+      this.col = ROW_MATRIX
+      this.board = new Uint8Array(this.row * this.col)
 
       // distancia equivalente entre el centro del grid (vista) y el board (matriz)
       this.syncDistance = { 
@@ -24,7 +24,7 @@ export default class CelullarAutomaton {
    isCellAlive(cell) {
       const { row, col } = this._syncToBoard(cell)
 
-      return this.board[row][col] === ALIVE ? true : false
+      return this.board[row * this.col + col]  === ALIVE ? true : false
    }
 
    // Elimina una célula viva(muere)
@@ -37,7 +37,7 @@ export default class CelullarAutomaton {
             aliveCell.col === col
          )
       })
-      this.board[row][col] = DEAD
+      this.board[row * this.col + col] = DEAD
       this.aliveCells.splice(index, 1)
    }
 
@@ -45,7 +45,7 @@ export default class CelullarAutomaton {
    addCell(cell) {
       const { row, col } = this._syncToBoard(cell)
 
-      this.board[row][col] = ALIVE
+      this.board[row * this.col + col] = ALIVE
       this.aliveCells.push({ row, col })
    }
 
@@ -53,8 +53,7 @@ export default class CelullarAutomaton {
    addPatternCells(cells) {
       this.aliveCells = [...cells]
       for (let {row, col} of cells)
-         this.board[row][col] = ALIVE
-
+         this.board[row * this.col + col] = ALIVE
    }
 
    // Comprueba si la célula está fuera de los límites
@@ -74,9 +73,7 @@ export default class CelullarAutomaton {
       this.dragDistance.col = 0
       this.syncDistance.row = Math.ceil(this.row / 2) - gridCenter.row
       this.syncDistance.col = Math.ceil(this.col / 2) - gridCenter.col
-      this.board = Array(this.row).fill().map(() => 
-         Array(this.col).fill(DEAD)
-      )
+      this.board.fill(0)
    }
 
    // Ejecuta el algoritmo y las reglas hasta obtener la siguiente generación
@@ -84,25 +81,25 @@ export default class CelullarAutomaton {
       if (this.aliveCells.length === 0) return
 
       let nextAliveCells = []
-      let nextBoard = structuredClone(this.board)
+      let nextBoard = [...this.board]
       
       // analiza cada célula de la matriz
       for (let i=1; i<this.row-1; i++) {
          for (let j=1; j<this.col-1; j++) {
-            const currentCell = this.board[i][j]
+            const currentCell = this.board[i * this.col + j]
             const neighbors = this._calculateNeighborsAlive(i, j)
             
             // reglas
             if (currentCell === ALIVE && neighbors < 2)
-               nextBoard[i][j] = DEAD       // muere por despoblación
+               nextBoard[i * this.col + j] = DEAD  // muere por despoblación
             else if (currentCell === ALIVE && neighbors > 3)
-               nextBoard[i][j] = DEAD       // muere por sobrepoblacion
+               nextBoard[i * this.col + j] = DEAD     // muere por sobrepoblacion
             else if (currentCell === DEAD && neighbors === 3) {
-               nextBoard[i][j] = ALIVE      // nace una nueva célula
+               nextBoard[i * this.col + j] = ALIVE    // nace una nueva célula
                nextAliveCells.push({ row: i, col: j })
             }
             else {
-               nextBoard[i][j] = currentCell    // no existen cambios
+               nextBoard[i * this.col + j] = currentCell    // no existen cambios
                if (currentCell === ALIVE)
                   nextAliveCells.push({ row: i, col: j })
             }
@@ -110,19 +107,20 @@ export default class CelullarAutomaton {
       }
       // actualiza los datos de la nueva generación
       this.aliveCells = [...nextAliveCells]
-      this.board = structuredClone(nextBoard)
+      this.board = [...nextBoard]
    }
 
    _calculateNeighborsAlive(i, j) {
       let neighbors = 0
-      if (this.board[i-1][j-1] === ALIVE) neighbors++     // up-left
-      if (this.board[i-1][j]   === ALIVE) neighbors++     // up
-      if (this.board[i-1][j+1] === ALIVE) neighbors++     // up-right
-      if (this.board[i][j-1]   === ALIVE) neighbors++     // left
-      if (this.board[i][j+1]   === ALIVE) neighbors++     // right
-      if (this.board[i+1][j-1] === ALIVE) neighbors++     // bottom-left
-      if (this.board[i+1][j]   === ALIVE) neighbors++     // bottom
-      if (this.board[i+1][j+1] === ALIVE) neighbors++     // bottom-right
+
+      if (this.board[(i-1) * this.col + j-1] === ALIVE) neighbors++  // up-left
+      if (this.board[(i-1) * this.col + j]   === ALIVE) neighbors++  // up
+      if (this.board[(i-1) * this.col + j+1] === ALIVE) neighbors++  // up-right
+      if (this.board[i * this.col + j-1]     === ALIVE) neighbors++  // left
+      if (this.board[i * this.col + j+1]     === ALIVE) neighbors++  // right
+      if (this.board[(i+1) * this.col + j-1] === ALIVE) neighbors++  // bottom-left
+      if (this.board[(i+1) * this.col + j]   === ALIVE) neighbors++  // bottom
+      if (this.board[(i+1) * this.col + j+1] === ALIVE) neighbors++  // bottom-right
       return neighbors
    }
 
@@ -142,5 +140,18 @@ export default class CelullarAutomaton {
             col: cell.col - this.syncDistance.col + this.dragDistance.col
          }
       })
+   }
+
+   printBoard() {
+      let cad = ''
+      console.log('==============')
+      for (let i = 1; i < this.row - 1; i++) {
+         for (let j = 1; j < this.col - 1; j++) {
+            let numb = this.board[i * this.col + j]
+            cad = cad.concat(numb + ' ')
+         }
+         console.log(cad)
+         cad = ''
+      }
    }
 }
