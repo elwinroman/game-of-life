@@ -1,12 +1,12 @@
 import { CELL_SIZE, SPEED, COLOR } from '../config.js'
-import { getMousePos, cssRunningGame, cssStoppedGame, listElement } from '../utils.js'
+import { getMousePos, cssRunningGame, cssStoppedGame, listElement as el } from '../utils.js'
 import Grid from './grid.js'
 import CelullarAutomaton from './life.js'
 import Pattern from './pattern.js'
 
 export default class GameControl {
    constructor() {
-      this.grid = new Grid(listElement.containerCanvas)
+      this.grid = new Grid(el.containerCanvas)
       this.ca = new CelullarAutomaton(this.grid.center)
 
       this.isDragging = false        // resuelve el conflicto entre click y mousedown
@@ -99,16 +99,16 @@ export default class GameControl {
    }
 
    zoomControl() {
-      listElement.zoomRange.value = CELL_SIZE
+      el.zoomRange.value = CELL_SIZE
 
-      listElement.zoomRange.addEventListener('input', () => {
-         this.grid.cellSize = parseInt(listElement.zoomRange.value)
+      el.zoomRange.addEventListener('input', () => {
+         this.grid.cellSize = parseInt(el.zoomRange.value)
          this._reconfigure()
       })
    }
 
    nextControl() {
-      listElement.nextBtn.addEventListener('click', () => {
+      el.nextBtn.addEventListener('click', () => {
          if (this.isRunning) return
 
          this._runGame()   
@@ -118,7 +118,7 @@ export default class GameControl {
    startControl() {
       cssStoppedGame()     // render the svg icon
 
-      listElement.startBtn.addEventListener('click', () => {
+      el.startBtn.addEventListener('click', () => {
          if (this.ca.aliveCells.length === 0) {
             alert('no hay vida')
             return
@@ -137,10 +137,10 @@ export default class GameControl {
    }
 
    speedControl() {
-      listElement.speedRange.value = -SPEED
+      el.speedRange.value = -SPEED
 
-      listElement.speedRange.addEventListener('change', () => {
-         this.speed = -parseInt(listElement.speedRange.value)
+      el.speedRange.addEventListener('change', () => {
+         this.speed = -parseInt(el.speedRange.value)
 
          if (this.isRunning) {
             clearInterval(this.timer)
@@ -150,7 +150,7 @@ export default class GameControl {
    }
 
    resetControl() {
-      listElement.resetBtn.addEventListener('click', () => {
+      el.resetBtn.addEventListener('click', () => {
          if (this.isRunning) return
 
          this.grid.draw()
@@ -159,10 +159,10 @@ export default class GameControl {
    }
 
    patternControl() {
-      listElement.patternSelect.addEventListener('change', () => {
+      el.patternSelect.addEventListener('change', () => {
          if (this.isRunning) return
 
-         const pattern_name = listElement.patternSelect.value
+         const pattern_name = el.patternSelect.value
          const pattern = new Pattern(pattern_name)
 
          pattern.decodeAsCells()
@@ -191,7 +191,7 @@ export default class GameControl {
 
    // Oculta o muestra las lineas de la cuadrícula
    gridlineControl() {
-      listElement.toggleGridlineBtn.addEventListener('click', () => {
+      el.toggleGridlineBtn.addEventListener('click', () => {
          this.hasGridline = !this.hasGridline
          
          if (this.hasGridline) {
@@ -208,7 +208,7 @@ export default class GameControl {
    }
 
    _reconfigure() {
-      this.grid.recalculate(listElement.containerCanvas)
+      this.grid.recalculate(el.containerCanvas)
       
       // mantiene el centro del grid cada vez que se hace un zoom en el grid o resize en el browser
       const oldGridCenter = {...this.grid.center}

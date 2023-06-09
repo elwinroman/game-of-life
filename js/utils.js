@@ -9,41 +9,49 @@ export function getMousePos(e) {
    }
 }
 
+// query selector
+export const $ = selector => document.querySelector(selector)
+
+// query selectorAll
+export const $$ = selector => document.querySelectorAll(selector)
+
 // Cuando el juego está 'corriendo'
 export function cssRunningGame() {
    pauseSvg()
-   listElement.startBtn.classList.add('is-running')
-   listElement.startBtn.nextElementSibling.textContent = 'Pausa'
+   const el = listElement
+   el.startBtn.classList.add('is-running')
+   el.startBtn.nextElementSibling.textContent = 'Pausa'
    
-   listElement.nextBtn.disabled = true
-   listElement.resetBtn.disabled = true
-   listElement.patternSelect.disabled = true
+   el.nextBtn.disabled = true
+   el.resetBtn.disabled = true
+   el.patternSelect.disabled = true
 }
 
 // Cuando el juego se ha detenido
 export function cssStoppedGame() {
    playSvg()
-   listElement.startBtn.classList.remove('is-running')
-   listElement.startBtn.nextElementSibling.textContent = 'Play'
+   const el = listElement
+   el.startBtn.classList.remove('is-running')
+   el.startBtn.nextElementSibling.textContent = 'Play'
 
-   listElement.nextBtn.disabled = false
-   listElement.resetBtn.disabled = false
-   listElement.patternSelect.disabled = false
+   el.nextBtn.disabled = false
+   el.resetBtn.disabled = false
+   el.patternSelect.disabled = false
 }
 
 export const listElement = {
    // life HTML Elements
-   toggleGridlineBtn: document.querySelector('button.toggle-gridline'),
-   containerCanvas: document.querySelector('.canvas-container'),
-   patternSelect: document.querySelector('.pattern-select'),
-   speedRange: document.getElementById('speed-range'),
-   zoomRange: document.getElementById('zoom-range'),
-   resetBtn: document.querySelector('button.reset-btn'),
-   startBtn: document.querySelector('button.start-btn'),
-   nextBtn: document.querySelector('button.next-btn'),
+   toggleGridlineBtn: $('button.toggle-gridline'),
+   containerCanvas: $('.canvas-container'),
+   patternSelect: $('.pattern-select'),
+   speedRange: $('#speed-range'),
+   zoomRange: $('#zoom-range'),
+   resetBtn: $('button.reset-btn'),
+   startBtn: $('button.start-btn'),
+   nextBtn: $('button.next-btn'),
    // header HTML Elements
-   logoContainer: document.querySelector('.navbar .logo'),
-   aspectContainer: document.querySelector('.navbar .aspect'),
-   githubContainer: document.querySelector('.navbar .github'),
-   navbar: document.querySelector('.navbar')
+   logoContainer: $('.navbar .logo'),
+   aspectContainer: $('.navbar .aspect'),
+   githubContainer: $('.navbar .github'),
+   navbar: $('.navbar')
 }
