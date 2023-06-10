@@ -21,7 +21,10 @@ export default class Grid {
       }
 
       this.border = 1
-      this.gridlineColor = COLOR.gridline
+
+      this.gridlineColor = COLOR.light.gridline
+      this.aliveColor = COLOR.light.alive_cell
+      this.deadColor = COLOR.light.dead_cell
    }
 
    // Dibuja la cuadricula en el canvas (cada vez que es invocado, resetea el lienzo)
@@ -46,7 +49,7 @@ export default class Grid {
    }
 
    paintCell(pos) {
-      this.ctx.fillStyle = COLOR.alive_cell
+      this.ctx.fillStyle = this.aliveColor
       this._fillSquare(pos)
    }
 
@@ -60,12 +63,12 @@ export default class Grid {
    }
 
    unpaintCell(pos) {
-      this.ctx.fillStyle = COLOR.background
+      this.ctx.fillStyle = this.deadColor
       this._fillSquare(pos)
    }
 
    paintAllAliveCells(aliveCells) {
-      this.ctx.fillStyle = COLOR.alive_cell
+      this.ctx.fillStyle = this.aliveColor
       for (let cell of aliveCells)
          this._fillSquare(cell)
    }

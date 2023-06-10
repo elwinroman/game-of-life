@@ -7,6 +7,6 @@ const game = new Game()
 game.events()
 game.panelControl()
 
-headerApp()
+headerApp(game)
 svgApp()
 loadPatterns()

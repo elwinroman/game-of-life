@@ -14,6 +14,7 @@ export default class GameControl {
       this.speed = SPEED
       this.isRunning = false         // juego inicia
       this.hasGridline = false       // tiene gridline?
+      this.isDark = false            // light theme por defecto
 
       this.grid.draw()
    }
@@ -196,10 +197,14 @@ export default class GameControl {
          
          if (this.hasGridline) {
             this.grid.border = 0.1
-            this.grid.gridlineColor = COLOR.background
+            this.grid.gridlineColor = this.isDark 
+               ? COLOR.dark.background
+               : COLOR.light.background
          } else {
             this.grid.border = 1
-            this.grid.gridlineColor = COLOR.gridline
+            this.grid.gridlineColor = this.isDark 
+               ? COLOR.dark.gridline
+               : COLOR.light.gridline
          }
 
          this.grid.draw()
