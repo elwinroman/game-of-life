@@ -24,6 +24,8 @@
    box-shadow: 5px 5px 15px 0px rgba(0, 0, 0, 0.4);
 }
 .navbar .logo {
+   flex-grow: 1;
+   flex-basis: 0;
    display: flex;
    align-items: center;
    gap: 5px;
@@ -55,7 +57,10 @@
    border: 1px solid transparent;
 }
 .navbar .tools {
+   flex-grow: 1;
+   flex-basis: 0;
    display: flex;
+   justify-content: flex-end;
    align-items: center;
 }
 .navbar .aspect,
