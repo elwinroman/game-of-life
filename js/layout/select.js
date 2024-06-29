@@ -1,5 +1,5 @@
-import listPatterns from './patterns.json' assert { type: 'json' }
+// import listPatterns from './patterns.json' assert { type: 'json' }
 
-export function loadPatterns() {
-   console.log(listPatterns)
-}
+// export function loadPatterns() {
+//    console.log(listPatterns)
+// }
